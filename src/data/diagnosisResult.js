@@ -42,5 +42,5 @@ export const mockDiagnosisResult = {
     },
   ],
   referralRecommended: false,
-  generatedBy: 'AarogyaSamhiti AI v0.1 (Prototype — Dummy Data)',
+  generatedBy: 'RuralCareConnect AI v0.1 (Prototype — Dummy Data)',
 }

@@ -47,7 +47,7 @@ export default function LandingPage() {
             🌿 AI-Powered Rural Healthcare · Prototype
           </span>
           <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight leading-tight mb-4">
-            AarogyaSamhiti
+            RuralCareConnect
           </h1>
           <p className="text-primary-100 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed mb-10">
             Bringing intelligent, affordable, and accessible healthcare to every village.
