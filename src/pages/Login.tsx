@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { toast } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn, refreshProfile, profile } = useAuth();
+  const { signIn, refreshProfile } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -16,16 +16,8 @@ export default function Login() {
     try {
       await signIn(email, password);
       await refreshProfile();
-      // the ProtectedRoute or App generally redirects based on role, but we should redirect explicitly here
-      // Since useAuth state update might be slightly delayed, we rely on the refreshed profile
-      const userRole = profile?.role; // we might need to wait for context to update, 
-      // easiest is to redirect to / which will let ProtectedRoute handle it, 
-      // or we can just push to dashboard and let it compute. 
-      // Let's just push to / for a generic redirect but the prompt says 
-      // "On success: fetch role from profiles table, redirect to /doctor/dashboard or /patient/dashboard"
-      // Since refreshProfile is called, profile might not immediately update in current closure, 
-      // but wait, we can just navigate to '/' and let the router handle the dashboard redirection if they are authed.
-      // Actually let me query it manually to be safe if `profile` isn't updated in closure.
+      // the ProtectedRoute or App generally redirects based on role, so we just redirect explicitly to /
+      // and let the router handle the dashboard redirection once the profile context updates.
       navigate('/');
     } catch (err: any) {
       toast.error(err.message || 'Failed to sign in');
