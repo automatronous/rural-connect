@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { HeartPulse } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -15,25 +16,30 @@ export default function Register() {
   const navigate = useNavigate();
 
   const handleRegisterClick = async () => {
-    setError(null);
-    if (!name || !email || !password) {
-      setError('Please fill in all fields.');
-      return;
-    }
-    if (!role) {
-      setError('Please select a role.');
-      return;
-    }
-    setLoading(true);
-    try {
-      await signUp(email, password, name, role);
-      navigate(`/${role}/dashboard`);
-    } catch (err) {
-      setError(err.message || "An error occurred during registration");
-    } finally {
-      setLoading(false);
-    }
-  };
+  setError(null);
+  if (!name || !email || !password) {
+    setError('Please fill in all fields.');
+    return;
+  }
+  if (!role) {
+    setError('Please select a role.');
+    return;
+  }
+  setLoading(true);
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: name, role } }
+    });
+    if (error) throw error;
+    navigate(role === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard');
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-primary-50 to-primary-100 flex items-center justify-center p-4 relative overflow-hidden my-8 sm:my-0">
