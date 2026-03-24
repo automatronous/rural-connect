@@ -4,7 +4,7 @@ import { api } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import type { Prediction } from '../types/database.types';
 import type { PredictRequest } from '../types/api.types';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 
 export function usePrediction() {
   const { profile } = useAuth();

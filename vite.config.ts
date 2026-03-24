@@ -10,6 +10,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    minify: false,
   },
   optimizeDeps: {
     include: ['lucide-react', 'leaflet', 'react-leaflet', 'date-fns', 'framer-motion'],
