@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { toast } from 'react-hot-toast';
+
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -15,16 +15,16 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!role) {
-      toast.error('Please select a role');
+      // removed toast
       return;
     }
     setLoading(true);
     try {
       await signUp(email, password, name, role);
-      toast.success('Registration successful. Please sign in if not redirected automatically.');
+      // removed toast
       navigate(`/${role}/dashboard`);
     } catch (err: any) {
-      toast.error(err.message || 'Failed to register');
+      // removed toast
     } finally {
       setLoading(false);
     }

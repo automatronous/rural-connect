@@ -4,7 +4,7 @@ import { api } from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import type { Prediction } from '../types/database.types';
 import type { PredictRequest } from '../types/api.types';
-import { toast } from 'react-hot-toast';
+
 
 export function usePrediction() {
   const { profile } = useAuth();
@@ -16,7 +16,7 @@ export function usePrediction() {
         if (!profile || profile.role !== 'doctor') throw new Error('Only doctors can run predictions');
         return api.predict(params);
       },
-      onError: (err) => toast.error(err instanceof Error ? err.message : 'Prediction failed'),
+      onError: () => { /* removed toast */ },
     });
 
   const savePrediction = useMutation({
@@ -28,10 +28,10 @@ export function usePrediction() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success('Prediction saved to patient record');
+      // removed toast
       queryClient.invalidateQueries({ queryKey: ['predictions'] });
     },
-    onError: () => toast.error('Failed to save prediction'),
+    onError: () => { /* removed toast */ },
   });
 
   return { runPrediction, predicting, predictionResult, reset, savePrediction: savePrediction.mutateAsync, saving: savePrediction.isPending };

@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 import type { MedicalRecord } from '../types/database.types';
-import { toast } from 'react-hot-toast';
+
 
 export function useMedicalRecords(patientId?: string) {
   return useQuery({
@@ -62,9 +62,9 @@ export function useUploadRecord() {
       if (dbError) throw dbError;
     },
     onSuccess: () => {
-      toast.success('File uploaded successfully!');
+      // removed toast
       queryClient.invalidateQueries({ queryKey: ['medical_records'] });
     },
-    onError: (err) => toast.error(err instanceof Error ? err.message : 'Upload failed'),
+    onError: () => { /* removed toast */ },
   });
 }

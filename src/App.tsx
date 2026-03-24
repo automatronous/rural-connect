@@ -6,7 +6,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
 import PatientDashboard from './pages/patient/PatientDashboard';
-import { Toaster } from 'react-hot-toast';
+
 
 function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, allowedRole?: 'doctor' | 'patient' }) {
   const { user, profile, loading } = useAuth();
@@ -21,9 +21,7 @@ function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, 
 function App() {
   return (
     <Router>
-      <Toaster position="top-right" toastOptions={{
-        style: { background: '#111', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }
-      }} />
+
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />

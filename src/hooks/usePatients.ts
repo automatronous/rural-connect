@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import type { Profile } from '../types/database.types';
-import { toast } from 'react-hot-toast';
+
 
 export function usePatients() {
   return useQuery({
@@ -84,10 +84,10 @@ export function useUpdateProfile() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success('Profile updated!');
+      // removed toast
       queryClient.invalidateQueries({ queryKey: ['patients'] });
       queryClient.invalidateQueries({ queryKey: ['patient'] });
     },
-    onError: () => toast.error('Failed to update profile'),
+    onError: () => { /* removed toast */ },
   });
 }

@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import type { Visit } from '../types/database.types';
 import { useAuth } from '../context/AuthContext';
-import { toast } from 'react-hot-toast';
+
 
 export function useVisits(patientId?: string) {
   return useQuery({
@@ -47,9 +47,9 @@ export function useAddVisit() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success('Visit note added!');
+      // removed toast
       queryClient.invalidateQueries({ queryKey: ['visits'] });
     },
-    onError: () => toast.error('Failed to add visit note'),
+    onError: () => { /* removed toast */ },
   });
 }

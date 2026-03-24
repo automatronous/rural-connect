@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { toast } from 'react-hot-toast';
+
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -20,7 +20,7 @@ export default function Login() {
       // and let the router handle the dashboard redirection once the profile context updates.
       navigate('/');
     } catch (err: any) {
-      toast.error(err.message || 'Failed to sign in');
+      // removed toast
     } finally {
       setLoading(false);
     }

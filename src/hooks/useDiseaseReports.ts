@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import type { DiseaseReport } from '../types/database.types';
 import { useAuth } from '../context/AuthContext';
-import { toast } from 'react-hot-toast';
+
 
 export function useDiseaseReports() {
   const queryClient = useQueryClient();
@@ -57,9 +57,9 @@ export function useAddDiseaseReport() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success('Disease report added to map!');
+      // removed toast
       queryClient.invalidateQueries({ queryKey: ['disease_reports'] });
     },
-    onError: () => toast.error('Failed to add report'),
+    onError: () => { /* removed toast */ },
   });
 }
