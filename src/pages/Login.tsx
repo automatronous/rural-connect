@@ -7,12 +7,14 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { signIn, refreshProfile } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     try {
       await signIn(email, password);
       await refreshProfile();
@@ -20,7 +22,7 @@ export default function Login() {
       // and let the router handle the dashboard redirection once the profile context updates.
       navigate('/');
     } catch (err: any) {
-      // removed toast
+      setError(err.message || "An error occurred during sign in");
     } finally {
       setLoading(false);
     }
@@ -63,6 +65,11 @@ export default function Login() {
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
+          {error && (
+            <p className="text-red-500 text-center mt-4 text-sm font-['Inter']">
+              {error}
+            </p>
+          )}
         </form>
 
         <p className="text-white/60 text-center mt-6">

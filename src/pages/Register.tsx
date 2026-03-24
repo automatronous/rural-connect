@@ -9,22 +9,23 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<'patient' | 'doctor' | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { signUp } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     if (!role) {
-      // removed toast
+      setError('Please select a role.');
       return;
     }
     setLoading(true);
     try {
       await signUp(email, password, name, role);
-      // removed toast
       navigate(`/${role}/dashboard`);
     } catch (err: any) {
-      // removed toast
+      setError(err.message || "An error occurred during registration");
     } finally {
       setLoading(false);
     }
@@ -96,6 +97,11 @@ export default function Register() {
           >
             {loading ? 'Creating Account...' : 'Register'}
           </button>
+          {error && (
+            <p className="text-red-500 text-center mt-4 text-sm font-['Inter']">
+              {error}
+            </p>
+          )}
         </form>
 
         <p className="text-white/60 text-center mt-6">
