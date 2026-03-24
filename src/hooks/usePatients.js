@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
-import type { Profile } from '../types/database.types';
 
 
 export function usePatients() {
@@ -13,12 +12,12 @@ export function usePatients() {
         .eq('role', 'patient')
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return data as Profile[];
+      return data;
     },
   });
 }
 
-export function usePatient(patientId?: string) {
+export function usePatient(patientId) {
   return useQuery({
     queryKey: ['patient', patientId],
     queryFn: async () => {
@@ -29,7 +28,7 @@ export function usePatient(patientId?: string) {
         .eq('id', patientId)
         .single();
       if (error) throw error;
-      return data as Profile;
+      return data;
     },
     enabled: !!patientId,
   });
@@ -47,7 +46,7 @@ export function usePatientsWithStats() {
       if (error) throw error;
 
       const patientsWithStats = await Promise.all(
-        (patients as Profile[]).map(async (p) => {
+        patients.map(async (p) => {
           const { data: lastVisit } = await supabase
             .from('visits')
             .select('visit_date, diagnosis_notes')
@@ -79,7 +78,7 @@ export function usePatientsWithStats() {
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<Profile> & { id: string }) => {
+    mutationFn: async ({ id, ...updates }) => {
       const { error } = await supabase.from('profiles').update(updates).eq('id', id);
       if (error) throw error;
     },

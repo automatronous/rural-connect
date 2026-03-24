@@ -1,10 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import type { MedicalRecord } from '../types/database.types';
 
 
-export function useMedicalRecords(patientId?: string) {
+export function useMedicalRecords(patientId) {
   return useQuery({
     queryKey: ['medical_records', patientId],
     queryFn: async () => {
@@ -15,7 +14,7 @@ export function useMedicalRecords(patientId?: string) {
       if (patientId) q.eq('patient_id', patientId);
       const { data, error } = await q;
       if (error) throw error;
-      return data as (MedicalRecord & { uploader: { name: string; role: string } })[];
+      return data;
     },
     enabled: patientId !== undefined || true,
   });
@@ -31,11 +30,6 @@ export function useUploadRecord() {
       patientId,
       recordType,
       notes,
-    }: {
-      file: File;
-      patientId: string;
-      recordType: string;
-      notes: string;
     }) => {
       if (!profile) throw new Error('Not authenticated');
       const timestamp = Date.now();

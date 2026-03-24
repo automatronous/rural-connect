@@ -8,9 +8,9 @@ import DoctorDashboard from './pages/doctor/DoctorDashboard';
 import PatientDashboard from './pages/patient/PatientDashboard';
 
 
-function ProtectedRoute({ children, allowedRole }: { children: React.ReactNode, allowedRole?: 'doctor' | 'patient' }) {
+function ProtectedRoute({ children, allowedRole }) {
   const { user, profile, loading } = useAuth();
-  if (loading) return <div className="min-h-screen bg-[#05070a] flex items-center justify-center text-white font-['Orbitron']">Loading...</div>;
+  if (loading) return <div className="min-h-screen bg-white flex items-center justify-center text-primary-600 font-display">Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
   if (allowedRole && profile?.role && profile.role !== allowedRole) {
     return <Navigate to={`/${profile.role}/dashboard`} replace />;

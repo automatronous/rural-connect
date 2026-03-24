@@ -1,10 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../lib/supabase';
-import type { Visit } from '../types/database.types';
 import { useAuth } from '../context/AuthContext';
 
 
-export function useVisits(patientId?: string) {
+export function useVisits(patientId) {
   return useQuery({
     queryKey: ['visits', patientId],
     queryFn: async () => {
@@ -15,7 +14,7 @@ export function useVisits(patientId?: string) {
       if (patientId) q.eq('patient_id', patientId);
       const { data, error } = await q;
       if (error) throw error;
-      return data as (Visit & { doctor: { name: string; email: string } })[];
+      return data;
     },
   });
 }
@@ -30,11 +29,6 @@ export function useAddVisit() {
       visitDate,
       notes,
       diagnosisNotes,
-    }: {
-      patientId: string;
-      visitDate: string;
-      notes: string;
-      diagnosisNotes: string;
     }) => {
       if (!profile || profile.role !== 'doctor') throw new Error('Only doctors can add visits');
       const { error } = await supabase.from('visits').insert({
