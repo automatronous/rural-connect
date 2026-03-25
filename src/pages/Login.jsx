@@ -36,8 +36,18 @@ export default function Login() {
       // STEP 1: Login
       await signIn(email, password);
 
-      // 🔥 STEP 2: DIRECT REDIRECT (BYPASS EVERYTHING)
-      navigate('/patient/dashboard');
+      // TEMP: assign role manually
+const role = email.includes('doctor') ? 'doctor' : 'patient';
+
+// store role in browser
+localStorage.setItem('role', role);
+
+// redirect based on role
+if (role === 'doctor') {
+  navigate('/doctor/dashboard');
+} else {
+  navigate('/patient/dashboard');
+}
 
     } catch (err) {
       setError(err.message || "An error occurred during sign in");
