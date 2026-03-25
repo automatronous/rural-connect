@@ -9,22 +9,21 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { signIn, refreshProfile } = useAuth();
+  const { supabase } = useAuth();
   const navigate = useNavigate();
 
-  const handleLoginClick = async () => {
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
-    }
-    setLoading(true);
+  const handleLogin = async () => {
     setError(null);
+    setLoading(true);
     try {
-      await signIn(email, password);
-      await refreshProfile();
-      navigate('/');
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email, password
+      });
+      if (error) throw error;
+      const role = data.user.user_metadata.role;
+      navigate(role === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard');
     } catch (err) {
-      setError(err.message || "An error occurred during sign in");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -73,7 +72,7 @@ export default function Login() {
           <motion.button 
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={handleLoginClick}
+            onClick={handleLogin}
             disabled={loading}
             className="btn-primary mt-4 flex items-center justify-center"
           >

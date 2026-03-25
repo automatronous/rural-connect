@@ -12,9 +12,10 @@ export default function Register() {
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { signUp } = useAuth();
+  const { supabase } = useAuth();
   const navigate = useNavigate();
 
+<<<<<<< HEAD
   const handleRegisterClick = async () => {
   setError(null);
   if (!name || !email || !password) {
@@ -40,6 +41,28 @@ export default function Register() {
     setLoading(false);
   }
 };
+=======
+  const handleRegister = async () => {
+    setError(null);
+    if (!name || !email || !password || !role) {
+      setError('All fields required');
+      return;
+    }
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email, password,
+        options: { data: { full_name: name, role } }
+      });
+      if (error) throw error;
+      navigate(role === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+>>>>>>> 097be72 (important stuff)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-primary-50 to-primary-100 flex items-center justify-center p-4 relative overflow-hidden my-8 sm:my-0">
@@ -112,7 +135,7 @@ export default function Register() {
           <motion.button 
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={handleRegisterClick}
+            onClick={handleRegister}
             disabled={loading}
             className="btn-primary mt-6 flex items-center justify-center"
           >
