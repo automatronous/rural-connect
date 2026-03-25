@@ -1,28 +1,69 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import { HeartPulse } from 'lucide-react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
+  // stores email input
+
   const [password, setPassword] = useState('');
+  // stores password input
+
   const [loading, setLoading] = useState(false);
+  // controls loading state (button text)
+
   const [error, setError] = useState(null);
+  // stores error message
+
   const { signIn, refreshProfile } = useAuth();
+  // signIn = login function
+  // refreshProfile = updates profile in context
+
   const navigate = useNavigate();
+  // used to change pages
 
   const handleLoginClick = async () => {
+    // check if fields are empty
     if (!email || !password) {
       setError("Please fill in all fields");
       return;
     }
+
     setLoading(true);
     setError(null);
+
     try {
+      // STEP 1: Login
       await signIn(email, password);
+
+      // STEP 2: Refresh profile
       await refreshProfile();
-      navigate('/');
+
+      // STEP 3: Get logged-in user
+      const { data: { user } } = await supabase.auth.getUser();
+
+      // STEP 4: Get role from database
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+
+      console.log("PROFILE:", profileData);
+      console.log("ERROR:", profileError);
+
+      // STEP 5: Redirect based on role
+      if (profileData?.role === 'doctor') {
+        navigate('/doctor/dashboard');
+      } else if (profileData?.role === 'patient') {
+        navigate('/patient/dashboard');
+      } else {
+        navigate('/');
+      }
+
     } catch (err) {
       setError(err.message || "An error occurred during sign in");
     } finally {
@@ -45,11 +86,16 @@ export default function Login() {
         <div className="flex justify-center mb-6">
           <HeartPulse className="w-12 h-12 text-primary-500 animate-pulse-slow" />
         </div>
-        <h2 className="font-display text-gray-900 text-3xl font-bold mb-8 text-center tracking-tight">Welcome Back</h2>
-        
+
+        <h2 className="font-display text-gray-900 text-3xl font-bold mb-8 text-center tracking-tight">
+          Welcome Back
+        </h2>
+
         <div className="space-y-6">
           <div>
-            <label className="block text-gray-700 font-medium mb-2 font-sans">Email Address</label>
+            <label className="block text-gray-700 font-medium mb-2 font-sans">
+              Email Address
+            </label>
             <input 
               type="email" 
               value={email}
@@ -58,9 +104,11 @@ export default function Login() {
               placeholder="Enter your email"
             />
           </div>
-          
+
           <div>
-            <label className="block text-gray-700 font-medium mb-2 font-sans">Password</label>
+            <label className="block text-gray-700 font-medium mb-2 font-sans">
+              Password
+            </label>
             <input 
               type="password" 
               value={password}
@@ -79,7 +127,7 @@ export default function Login() {
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </motion.button>
-          
+
           {error && (
             <motion.p 
               initial={{ opacity: 0 }}
@@ -92,7 +140,13 @@ export default function Login() {
         </div>
 
         <p className="text-gray-600 text-center mt-8 font-medium">
-          New to RuralConnect? <Link to="/register" className="text-primary-600 hover:text-primary-700 font-bold transition-colors">Create Account</Link>
+          New to RuralConnect?{" "}
+          <Link 
+            to="/register" 
+            className="text-primary-600 hover:text-primary-700 font-bold transition-colors"
+          >
+            Create Account
+          </Link>
         </p>
       </motion.div>
     </div>
