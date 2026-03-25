@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 import { HeartPulse } from 'lucide-react';
 
@@ -13,20 +12,18 @@ export default function Login() {
   // stores password input
 
   const [loading, setLoading] = useState(false);
-  // controls loading state (button text)
+  // controls loading state
 
   const [error, setError] = useState(null);
   // stores error message
 
-  const { signIn, refreshProfile } = useAuth();
-  // signIn = login function
-  // refreshProfile = updates profile in context
+  const { signIn } = useAuth();
+  // ONLY using signIn now (removed refreshProfile)
 
   const navigate = useNavigate();
   // used to change pages
 
   const handleLoginClick = async () => {
-    // check if fields are empty
     if (!email || !password) {
       setError("Please fill in all fields");
       return;
@@ -39,30 +36,8 @@ export default function Login() {
       // STEP 1: Login
       await signIn(email, password);
 
-      // STEP 2: Refresh profile
-      await refreshProfile();
-
-      // STEP 3: Get logged-in user
-      const { data: { user } } = await supabase.auth.getUser();
-
-      // STEP 4: Get role from database
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single();
-
-      console.log("PROFILE:", profileData);
-      console.log("ERROR:", profileError);
-
-      // STEP 5: Redirect based on role
-      if (profileData?.role === 'doctor') {
-        navigate('/doctor/dashboard');
-      } else if (profileData?.role === 'patient') {
-        navigate('/patient/dashboard');
-      } else {
-        navigate('/');
-      }
+      // 🔥 STEP 2: DIRECT REDIRECT (BYPASS EVERYTHING)
+      navigate('/patient/dashboard');
 
     } catch (err) {
       setError(err.message || "An error occurred during sign in");
