@@ -3,21 +3,107 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
   body {
-    @apply bg-white text-gray-900 font-sans antialiased overflow-x-hidden;
+    @apply min-h-screen bg-[#05070a] font-['Inter'] text-white antialiased;
+    background-image:
+      radial-gradient(circle at top, rgba(255, 68, 68, 0.18), transparent 28%),
+      radial-gradient(circle at bottom right, rgba(68, 136, 255, 0.16), transparent 24%),
+      linear-gradient(180deg, #09111a 0%, #05070a 45%, #05070a 100%);
+  }
+
+  #root {
+    @apply min-h-screen;
   }
 }
 
 @layer components {
-  .glass-card {
-    @apply bg-white/70 backdrop-blur-lg border border-gray-200/50 shadow-xl shadow-gray-200/50 rounded-2xl;
-  }
-  
-  .glass-input {
-    @apply bg-white/50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 w-full transition-all;
+  .app-shell {
+    @apply bg-[#05070a] text-white;
   }
 
-  .btn-primary {
-    @apply w-full bg-primary-500 hover:bg-primary-600 text-white font-bold py-3 px-6 rounded-xl transition-all disabled:opacity-50 shadow-lg shadow-primary-500/30 hover:shadow-primary-500/50 hover:-translate-y-0.5 active:translate-y-0;
+  .panel-card {
+    @apply rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
   }
+
+  .field-input {
+    @apply w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-red-500 focus:outline-none;
+  }
+
+  .field-select {
+    @apply w-full appearance-none rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-red-500 focus:outline-none;
+  }
+
+  .field-textarea {
+    @apply min-h-[120px] w-full resize-y rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-red-500 focus:outline-none;
+  }
+
+  .primary-button {
+    @apply rounded-xl bg-red-500 px-6 py-3 font-bold text-black transition-all duration-200 hover:bg-red-400 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .secondary-button {
+    @apply rounded-xl border border-white/20 bg-white/5 px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-white/10;
+  }
+
+  .heading-orbitron {
+    @apply font-['Orbitron'] tracking-wider;
+  }
+
+  .nav-link {
+    @apply rounded-full px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-200 hover:bg-white/5 hover:text-white;
+  }
+
+  .nav-link-active {
+    @apply bg-white/10 text-white;
+  }
+
+  .badge-doctor {
+    @apply border border-red-500/30 bg-red-500/15 text-red-300;
+  }
+
+  .badge-patient {
+    @apply border border-blue-500/30 bg-blue-500/15 text-blue-300;
+  }
+
+  .table-shell {
+    @apply overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md;
+  }
+
+  .table-head {
+    @apply bg-white/[0.03] text-left text-xs uppercase tracking-[0.2em] text-white/50;
+  }
+
+  .table-cell {
+    @apply px-4 py-3 text-sm text-white/80;
+  }
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: #05070a;
+  font-family: Inter, sans-serif;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: rgba(5, 7, 10, 0.96);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.leaflet-control-attribution,
+.leaflet-control-zoom a {
+  background: rgba(5, 7, 10, 0.8) !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
 }

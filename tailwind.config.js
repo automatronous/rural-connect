@@ -2,18 +2,17 @@
 export default {
   content: [
     './index.html',
-    './src/**/*.{js,jsx}',
+    './src/**/*.{ts,tsx,js,jsx}',
   ],
   theme: {
     extend: {
       colors: {
         primary: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          500: '#00C853',
-          600: '#00b04a',
-          700: '#009641',
-        }
+          500: '#ff4444',
+          400: '#ff6a6a',
+        },
+        doctor: '#ff4444',
+        patient: '#4488ff',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
