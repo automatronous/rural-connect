@@ -57,10 +57,10 @@ export default function Register() {
         ]);
 
       if (profileError) {
-        console.error(profileError);
-        setError("Profile creation failed.");
-        return;
-      }
+  console.error("PROFILE ERROR:", profileError);
+  setError(profileError.message);
+  return;
+}
 
       // STEP 3: Redirect
       navigate('/login');
