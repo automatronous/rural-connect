@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { HeartPulse } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -12,34 +11,66 @@ export default function Register() {
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { signUp } = useAuth();
   const navigate = useNavigate();
 
   const handleRegisterClick = async () => {
-  setError(null);
-  if (!name || !email || !password) {
-    setError('Please fill in all fields.');
-    return;
-  }
-  if (!role) {
-    setError('Please select a role.');
-    return;
-  }
-  setLoading(true);
-  try {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: name, role } }
-    });
-    if (error) throw error;
-    navigate(role === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard');
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
+    setError(null);
+
+    if (!name || !email || !password) {
+      setError('Please fill in all fields.');
+      return;
+    }
+
+    if (!role) {
+      setError('Please select a role.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // STEP 1: Sign up user
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      const user = data.user;
+
+      if (!user) {
+        setError("User creation failed.");
+        return;
+      }
+
+      // STEP 2: Insert profile into DB
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert([
+          {
+            id: user.id,
+            name: name,
+            email: email,
+            role: role,
+          },
+        ]);
+
+      if (profileError) {
+        console.error(profileError);
+        setError("Profile creation failed.");
+        return;
+      }
+
+      // STEP 3: Redirect
+      navigate('/login');
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-primary-50 to-primary-100 flex items-center justify-center p-4 relative overflow-hidden my-8 sm:my-0">
@@ -56,11 +87,16 @@ export default function Register() {
         <div className="flex justify-center mb-6">
           <HeartPulse className="w-12 h-12 text-primary-500 animate-pulse-slow" />
         </div>
-        <h2 className="font-display text-gray-900 text-3xl font-bold mb-8 text-center tracking-tight">Create Account</h2>
-        
+
+        <h2 className="font-display text-gray-900 text-3xl font-bold mb-8 text-center tracking-tight">
+          Create Account
+        </h2>
+
         <div className="space-y-5">
           <div>
-            <label className="block text-gray-700 font-medium mb-2 font-sans">Full Name</label>
+            <label className="block text-gray-700 font-medium mb-2 font-sans">
+              Full Name
+            </label>
             <input 
               type="text" 
               value={name}
@@ -69,9 +105,11 @@ export default function Register() {
               placeholder="Dr. John Doe / Jane Smith"
             />
           </div>
-          
+
           <div>
-            <label className="block text-gray-700 font-medium mb-2 font-sans">Email Address</label>
+            <label className="block text-gray-700 font-medium mb-2 font-sans">
+              Email Address
+            </label>
             <input 
               type="email" 
               value={email}
@@ -80,9 +118,11 @@ export default function Register() {
               placeholder="Enter your email"
             />
           </div>
-          
+
           <div>
-            <label className="block text-gray-700 font-medium mb-2 font-sans">Password</label>
+            <label className="block text-gray-700 font-medium mb-2 font-sans">
+              Password
+            </label>
             <input 
               type="password" 
               value={password}
@@ -98,14 +138,19 @@ export default function Register() {
               onClick={() => setRole('patient')}
               className={`bg-white/50 backdrop-blur-sm border rounded-xl p-4 transition-all flex items-center justify-center ${role === 'patient' ? 'border-primary-500 bg-primary-50 shadow-md ring-2 ring-primary-500/20' : 'border-gray-200 hover:bg-white/80'}`}
             >
-              <span className={`font-bold ${role === 'patient' ? 'text-primary-600' : 'text-gray-600'}`}>I am a Patient</span>
+              <span className={`font-bold ${role === 'patient' ? 'text-primary-600' : 'text-gray-600'}`}>
+                I am a Patient
+              </span>
             </button>
+
             <button
               type="button"
               onClick={() => setRole('doctor')}
               className={`bg-white/50 backdrop-blur-sm border rounded-xl p-4 transition-all flex items-center justify-center ${role === 'doctor' ? 'border-primary-500 bg-primary-50 shadow-md ring-2 ring-primary-500/20' : 'border-gray-200 hover:bg-white/80'}`}
             >
-              <span className={`font-bold ${role === 'doctor' ? 'text-primary-600' : 'text-gray-600'}`}>I am a Doctor</span>
+              <span className={`font-bold ${role === 'doctor' ? 'text-primary-600' : 'text-gray-600'}`}>
+                I am a Doctor
+              </span>
             </button>
           </div>
 
@@ -118,7 +163,7 @@ export default function Register() {
           >
             {loading ? 'Creating Account...' : 'Register'}
           </motion.button>
-          
+
           {error && (
             <motion.p 
               initial={{ opacity: 0 }}
@@ -131,7 +176,10 @@ export default function Register() {
         </div>
 
         <p className="text-gray-600 text-center mt-8 font-medium">
-          Already have an account? <Link to="/login" className="text-primary-600 hover:text-primary-700 font-bold transition-colors">Sign In</Link>
+          Already have an account?{" "}
+          <Link to="/login" className="text-primary-600 hover:text-primary-700 font-bold transition-colors">
+            Sign In
+          </Link>
         </p>
       </motion.div>
     </div>
