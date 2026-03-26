@@ -13,6 +13,6 @@ export default defineConfig({
     minify: false,
   },
   optimizeDeps: {
-    include: ['lucide-react', 'leaflet', 'react-leaflet', 'date-fns', 'framer-motion'],
+    include: ['lucide-react', 'leaflet', 'leaflet.heat', 'date-fns', 'framer-motion'],
   },
 });
