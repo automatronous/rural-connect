@@ -21,6 +21,10 @@ export default function Login() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    // NEW: if already submitting, ignore
+    if (loading) return;
+
     setError(null);
     setLoading(true);
 
@@ -46,7 +50,9 @@ export default function Login() {
       await signOut();
       setError('This account does not have a valid role.');
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : 'Login failed.');
+      setError(
+        submitError instanceof Error ? submitError.message : 'Login failed.',
+      );
     } finally {
       setLoading(false);
     }
@@ -60,7 +66,9 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="panel-card w-full max-w-md space-y-5">
           <div>
             <h1 className="heading-orbitron text-3xl font-bold text-white">Sign In</h1>
-            <p className="mt-3 text-white/60">Access the correct doctor or patient workspace.</p>
+            <p className="mt-3 text-white/60">
+              Access the correct doctor or patient workspace.
+            </p>
           </div>
 
           <input
@@ -81,7 +89,11 @@ export default function Login() {
             required
           />
 
-          <button type="submit" className="primary-button w-full" disabled={loading}>
+          <button
+            type="submit"
+            className="primary-button w-full"
+            disabled={loading}
+          >
             {loading ? 'Signing in...' : 'Login'}
           </button>
 
