@@ -39,7 +39,6 @@ export const NAV_LINKS: Record<Role, Array<{ label: string; to: string }>> = {
   doctor: [
     { label: 'Dashboard', to: '/doctor/dashboard' },
     { label: 'Patients', to: '/doctor/patients' },
-    { label: 'Heatmap', to: '/doctor/heatmap' },
     { label: 'AI Predictor', to: '/doctor/predict' },
   ],
   patient: [

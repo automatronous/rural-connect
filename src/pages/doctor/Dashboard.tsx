@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import DoctorHeatMap from '../../components/DoctorHeatMap';
 import { LoadingScreen } from '../../components/LoadingScreen';
 import { StatCard } from '../../components/StatCard';
 import { useAuth } from '../../context/AuthContext';
@@ -46,9 +47,9 @@ export default function DoctorDashboard() {
           <Link to="/doctor/predict" className="primary-button text-center">
             New Prediction
           </Link>
-          <Link to="/doctor/heatmap" className="secondary-button text-center">
-            View Heatmap
-          </Link>
+          <a href="#doctor-live-heatmap" className="secondary-button text-center">
+            Live Heatmap
+          </a>
           <Link to="/doctor/patients" className="secondary-button text-center">
             All Patients
           </Link>
@@ -60,6 +61,8 @@ export default function DoctorDashboard() {
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {data?.stats.map((stat) => <StatCard key={stat.label} {...stat} />)}
       </section>
+
+      <DoctorHeatMap />
 
       <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="panel-card">
