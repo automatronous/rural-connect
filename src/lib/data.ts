@@ -1,4 +1,3 @@
-import type { RealtimeChannelStatus } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 import type {
   DiseaseReport,
@@ -83,7 +82,7 @@ export async function fetchDoctorLocations(limit = 250) {
 
 export function subscribeToPatientLocations(input: {
   onInsert: (location: LocationPoint) => void;
-  onStatus?: (status: RealtimeChannelStatus) => void;
+  onStatus?: (status: 'SUBSCRIBED' | 'TIMED_OUT' | 'CLOSED' | 'CHANNEL_ERROR' | string) => void;
 }) {
   const channel = supabase
     .channel(`patient_locations_${Date.now()}`)

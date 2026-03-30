@@ -1,5 +1,5 @@
 import { startTransition, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { RealtimeChannelStatus } from '@supabase/supabase-js';
+// Removed RealtimeChannelStatus import
 import L from 'leaflet';
 import { Activity, AlertTriangle, LoaderCircle, Radio, RefreshCw } from 'lucide-react';
 import { MapContainer, TileLayer, ZoomControl, useMap } from 'react-leaflet';
@@ -17,7 +17,7 @@ const HEATMAP_GRADIENT: Record<number, string> = {
   1: '#ff5757',
 };
 
-type FeedState = RealtimeChannelStatus | 'CONNECTING';
+type FeedState = 'SUBSCRIBED' | 'TIMED_OUT' | 'CLOSED' | 'CHANNEL_ERROR' | string | 'CONNECTING';
 
 function sortLocations(points: LocationPoint[]) {
   return [...points]

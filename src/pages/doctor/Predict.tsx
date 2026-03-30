@@ -18,16 +18,17 @@ import { useAuth } from '../../context/AuthContext';
 import { predictDisease } from '../../lib/api';
 import { fetchPatients } from '../../lib/data';
 import type { PredictionApiResponse, Profile } from '../../lib/types';
+import { useLanguage } from '../../lib/i18n/LanguageContext';
 
 const SYMPTOM_ICONS: Record<string, { icon: React.ReactNode; color: string }> = {
-  Fever: { icon: <Thermometer className="h-6 w-6" />, color: '#ba1a1a' },
-  Cough: { icon: <Wind className="h-6 w-6" />, color: '#003178' },
-  'Muscle Pain': { icon: <Zap className="h-6 w-6" />, color: '#6b7a3d' },
-  Headache: { icon: <Brain className="h-6 w-6" />, color: '#003178' },
-  Rash: { icon: <Flame className="h-6 w-6" />, color: '#ba1a1a' },
-  Fatigue: { icon: <CircleDot className="h-6 w-6" />, color: '#003178' },
-  Dizziness: { icon: <CircleDot className="h-6 w-6" />, color: '#1b6d24' },
-  Nausea: { icon: <Pill className="h-6 w-6" />, color: '#1b6d24' },
+  Fever: { icon: <Thermometer className="h-6 w-6" />, color: '#DC2626' },
+  Cough: { icon: <Wind className="h-6 w-6" />, color: '#0284C7' },
+  'Muscle Pain': { icon: <Zap className="h-6 w-6" />, color: '#16A34A' },
+  Headache: { icon: <Brain className="h-6 w-6" />, color: '#003B95' },
+  Rash: { icon: <Flame className="h-6 w-6" />, color: '#DC2626' },
+  Fatigue: { icon: <CircleDot className="h-6 w-6" />, color: '#475569' },
+  Dizziness: { icon: <CircleDot className="h-6 w-6" />, color: '#0284C7' },
+  Nausea: { icon: <Pill className="h-6 w-6" />, color: '#16A34A' },
 };
 
 const QUICK_SYMPTOMS = [
@@ -44,6 +45,7 @@ const QUICK_SYMPTOMS = [
 export default function DoctorPredict() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [patients, setPatients] = useState<Profile[]>([]);
   const [selectedPatientId, setSelectedPatientId] = useState('');
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
@@ -126,7 +128,7 @@ export default function DoctorPredict() {
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-cs-primary">
               Step {currentStep} of {totalSteps}
             </p>
-            <h1 className="mt-1 font-display text-2xl font-bold text-cs-ink">Symptom Screening</h1>
+            <h1 className="mt-1 font-display text-2xl font-bold text-cs-ink">{t('symptomScreening')}</h1>
           </div>
           <span className="text-sm text-cs-ink-secondary">{progress}% Complete</span>
         </div>
@@ -154,8 +156,7 @@ export default function DoctorPredict() {
       {/* Main Question */}
       <div>
         <h2 className="font-display text-3xl font-bold leading-tight text-cs-ink md:text-4xl">
-          What symptoms are you{' '}
-          <span className="text-cs-primary">experiencing today?</span>
+          {t('whatSymptoms')}
         </h2>
         <p className="mt-3 max-w-xl text-sm text-cs-ink-secondary">
           Select all that apply. This helps our AI prioritize your care needs before connecting with a provider.
@@ -170,7 +171,7 @@ export default function DoctorPredict() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="field-input pl-11"
-          placeholder="Search for a specific symptom (e.g. sore throat)"
+          placeholder={t('searchSymptom')}
         />
       </div>
 
@@ -185,24 +186,24 @@ export default function DoctorPredict() {
               key={symptom.key}
               type="button"
               onClick={() => toggleSymptom(symptom.key)}
-              className={`flex flex-col items-center gap-3 rounded-2xl p-6 transition-all duration-200 ${
+              className={`flex flex-col items-center gap-3 rounded-[24px] p-6 transition-all duration-200 ${
                 isSelected
-                  ? 'bg-cs-primary/5 ring-2 ring-cs-primary'
-                  : 'bg-white shadow-cs hover:shadow-cs-lg'
+                  ? 'bg-white ring-2 ring-cs-primary shadow-sm'
+                  : 'bg-white shadow-sm hover:shadow-md'
               }`}
             >
               <div
-                className="flex h-12 w-12 items-center justify-center rounded-xl"
+                className="flex h-14 w-14 items-center justify-center rounded-full"
                 style={{
-                  backgroundColor: isSelected ? '#003178' : `${iconConfig?.color ?? '#003178'}15`,
-                  color: isSelected ? 'white' : iconConfig?.color ?? '#003178',
+                  backgroundColor: isSelected ? '#003B95' : `${iconConfig?.color ?? '#003B95'}15`,
+                  color: isSelected ? 'white' : iconConfig?.color ?? '#003B95',
                 }}
               >
                 {iconConfig?.icon ?? <HeartPulse className="h-6 w-6" />}
               </div>
               <span className="text-sm font-semibold text-cs-ink">{symptom.label}</span>
               {isSelected ? (
-                <span className="rounded-full bg-cs-primary px-2 py-0.5 text-[10px] font-bold uppercase text-white">
+                <span className="rounded-full bg-cs-primary-light px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cs-primary">
                   Selected
                 </span>
               ) : null}
@@ -226,7 +227,7 @@ export default function DoctorPredict() {
           disabled={predicting || !selectedSymptoms.length || !selectedPatientId}
           className="primary-button flex items-center gap-2"
         >
-          {predicting ? 'Analyzing...' : 'Continue to Details →'}
+          {predicting ? 'Analyzing...' : t('continueToDetails')}
         </button>
       </div>
 
