@@ -23,6 +23,16 @@ export interface DiseaseReport {
   created_at: string;
 }
 
+export interface LocationPoint {
+  id: string;
+  user_id: string | null;
+  lat: number;
+  lng: number;
+  intensity: number;
+  created_at: string;
+  user_role: Role;
+}
+
 export interface MedicalRecord {
   id: string;
   patient_id: string;

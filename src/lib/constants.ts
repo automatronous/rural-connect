@@ -44,13 +44,12 @@ export const FALLBACK_DISEASE_COLORS = [
   '#f9844a',
 ] as const;
 
-export interface NavItem {
-  label: string;
-  to: string;
-  icon: LucideIcon;
-}
-
-export const NAV_LINKS: Record<Role, NavItem[]> = {
+export const NAV_LINKS: Record<Role, Array<{ label: string; to: string }>> = {
+  doctor: [
+    { label: 'Dashboard', to: '/doctor/dashboard' },
+    { label: 'Patients', to: '/doctor/patients' },
+    { label: 'AI Predictor', to: '/doctor/predict' },
+  ],
   patient: [
     { label: 'Dashboard', to: '/patient/dashboard', icon: LayoutDashboard },
     { label: 'View previous cases', to: '/patient/history', icon: FileText },

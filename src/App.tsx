@@ -8,7 +8,6 @@ import PublicMap from './pages/PublicMap';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import DoctorDashboard from './pages/doctor/Dashboard';
-import DoctorHeatmap from './pages/doctor/Heatmap';
 import DoctorPatientDetail from './pages/doctor/PatientDetail';
 import DoctorPatients from './pages/doctor/Patients';
 import DoctorPredict from './pages/doctor/Predict';
@@ -71,7 +70,7 @@ export default function App() {
             <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
             <Route path="/doctor/patients" element={<DoctorPatients />} />
             <Route path="/doctor/patients/:id" element={<DoctorPatientDetail />} />
-            <Route path="/doctor/heatmap" element={<DoctorHeatmap />} />
+            <Route path="/doctor/heatmap" element={<Navigate to="/doctor/dashboard" replace />} />
             <Route path="/doctor/predict" element={<DoctorPredict />} />
             <Route path="/doctor/results" element={<DoctorResults />} />
           </Route>
