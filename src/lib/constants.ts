@@ -4,7 +4,6 @@ import {
   FileText,
   LayoutDashboard,
   Map as MapIcon,
-  Settings,
   Users,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -54,16 +53,13 @@ export interface NavItem {
 export const NAV_LINKS: Record<Role, NavItem[]> = {
   patient: [
     { label: 'Dashboard', to: '/patient/dashboard', icon: LayoutDashboard },
-    { label: 'AI Symptom Checker', to: '/patient/map', icon: Brain },
-    { label: 'Book Doctor', to: '/patient/records', icon: CalendarCheck },
-    { label: 'Disease Heatmap', to: '/patient/map', icon: MapIcon },
-    { label: 'Medical Records', to: '/patient/records', icon: FileText },
-    { label: 'Profile / Settings', to: '/patient/profile', icon: Settings },
+    { label: 'View previous cases', to: '/patient/history', icon: FileText },
+    { label: 'Add new case', to: '/patient/predict', icon: Brain },
+    { label: 'Medical Records', to: '/patient/records', icon: CalendarCheck },
   ],
   doctor: [
     { label: 'Dashboard', to: '/doctor/dashboard', icon: LayoutDashboard },
-    { label: 'AI Symptom Checker', to: '/doctor/predict', icon: Brain },
-    { label: 'Patients', to: '/doctor/patients', icon: Users },
+    { label: 'Patient Cases', to: '/doctor/patients', icon: Users },
     { label: 'Disease Heatmap', to: '/doctor/heatmap', icon: MapIcon },
   ],
 };

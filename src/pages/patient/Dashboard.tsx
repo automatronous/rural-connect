@@ -10,7 +10,6 @@ import {
   MapPin,
   Shield,
   Stethoscope,
-  TrendingUp,
   Users,
 } from 'lucide-react';
 import { LoadingScreen } from '../../components/LoadingScreen';
@@ -89,7 +88,7 @@ function TrendChart() {
 }
 
 export default function PatientDashboard() {
-  const { profile, user } = useAuth();
+  const { user } = useAuth();
   const [data, setData] = useState<PatientDashboardData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [trendPeriod, setTrendPeriod] = useState<'weekly' | 'monthly'>('weekly');
@@ -263,7 +262,7 @@ export default function PatientDashboard() {
             </p>
 
             <Link
-              to="/patient/map"
+              to="/patient/predict"
               className="flex items-center justify-between rounded-2xl p-4 text-white transition-all hover:shadow-cs-hover"
               style={{ background: 'linear-gradient(135deg, #003178, #0d47a1)' }}
             >
@@ -341,29 +340,6 @@ export default function PatientDashboard() {
               <p className="text-xs text-cs-green">
                 Recommendation: Use bed nets and repellent during evening hours.
               </p>
-            </div>
-            <Link
-              to="/patient/map"
-              className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-cs-ink"
-            >
-              View Hotspot Map <TrendingUp className="h-3 w-3" />
-            </Link>
-          </div>
-
-          {/* Community Health Status (Mini Map Preview) */}
-          <div className="panel-card overflow-hidden p-0">
-            <div className="relative h-32 bg-gradient-to-br from-cs-primary/20 to-cs-green/10">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold text-cs-ink shadow-sm">
-                  2 ACTIVE RISK ZONES
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center justify-between p-4">
-              <span className="text-xs text-cs-ink-secondary">Community Health Status</span>
-              <span className="rounded-full bg-cs-green-light px-2 py-0.5 text-[10px] font-bold text-cs-green">
-                STABLE
-              </span>
             </div>
           </div>
         </div>

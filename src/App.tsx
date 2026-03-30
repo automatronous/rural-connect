@@ -14,7 +14,9 @@ import DoctorPatients from './pages/doctor/Patients';
 import DoctorPredict from './pages/doctor/Predict';
 import DoctorResults from './pages/doctor/Results';
 import PatientDashboard from './pages/patient/Dashboard';
-import PatientMap from './pages/patient/Map';
+import PatientHistory from './pages/patient/History';
+import PatientPredict from './pages/patient/Predict';
+import PatientResults from './pages/patient/Results';
 import PatientProfile from './pages/patient/Profile';
 import PatientRecords from './pages/patient/Records';
 
@@ -58,7 +60,9 @@ export default function App() {
             <Route path="/patient/dashboard" element={<PatientDashboard />} />
             <Route path="/patient/records" element={<PatientRecords />} />
             <Route path="/patient/profile" element={<PatientProfile />} />
-            <Route path="/patient/map" element={<PatientMap />} />
+            <Route path="/patient/history" element={<PatientHistory />} />
+            <Route path="/patient/predict" element={<PatientPredict />} />
+            <Route path="/patient/results" element={<PatientResults />} />
           </Route>
         </Route>
 

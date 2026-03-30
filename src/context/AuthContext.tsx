@@ -60,23 +60,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let mounted = true;
 
     async function hydrateSession() {
-      const { data } = await supabase.auth.getSession();
-      const nextSession = data.session;
-      if (!mounted) return;
-
-      setSession(nextSession);
-      setUser(nextSession?.user ?? null);
-
-      if (nextSession?.user) {
-        const nextProfile = await fetchProfile(nextSession.user.id);
+      try {
+        const { data } = await supabase.auth.getSession();
+        const nextSession = data.session;
         if (!mounted) return;
-        applyProfile(nextProfile);
-      } else {
-        applyProfile(null);
-      }
 
-      if (mounted) {
-        setLoading(false);
+        setSession(nextSession);
+        setUser(nextSession?.user ?? null);
+
+        if (nextSession?.user) {
+          const nextProfile = await fetchProfile(nextSession.user.id);
+          if (!mounted) return;
+          applyProfile(nextProfile);
+        } else {
+          applyProfile(null);
+        }
+      } catch (err) {
+        console.error('Session hydration error:', err);
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
       }
     }
 
@@ -85,17 +89,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, nextSession) => {
-      setSession(nextSession);
-      setUser(nextSession?.user ?? null);
+      try {
+        setSession(nextSession);
+        setUser(nextSession?.user ?? null);
 
-      if (nextSession?.user) {
-        const nextProfile = await fetchProfile(nextSession.user.id);
-        applyProfile(nextProfile);
-      } else {
-        applyProfile(null);
+        if (nextSession?.user) {
+          const nextProfile = await fetchProfile(nextSession.user.id);
+          applyProfile(nextProfile);
+        } else {
+          applyProfile(null);
+        }
+      } catch (err) {
+        console.error('Auth state change error:', err);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     });
 
     return () => {

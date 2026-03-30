@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import {
   BarChart3,
@@ -10,35 +11,39 @@ import {
 } from 'lucide-react';
 import type { PredictionApiResponse } from '../../lib/types';
 import { formatLabel, normalizeConfidence } from '../../lib/utils';
+import { useAuth } from '../../context/AuthContext';
+import { savePredictionRecord } from '../../lib/data';
 
 interface ResultsState {
   result: PredictionApiResponse;
   selectedSymptoms: string[];
-  selectedPatientId: string;
   patientName: string;
 }
 
-export default function DoctorResults() {
+export default function PatientResults() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const state = location.state as ResultsState | null;
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
-  if (!state?.result) {
+  if (!state?.result || !user) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4">
         <p className="text-cs-ink-secondary">No results to display.</p>
         <button
           type="button"
-          onClick={() => navigate('/doctor/predict')}
+          onClick={() => navigate('/patient/predict')}
           className="primary-button"
         >
-          Go to Symptom Screening
+          Go to Symptom Checker
         </button>
       </div>
     );
   }
 
-  const { result, patientName } = state;
+  const { result, selectedSymptoms, patientName } = state;
   const confidence = normalizeConfidence(result.confidence);
   const isHighPriority = confidence >= 60;
   const today = new Date().toLocaleDateString('en-US', {
@@ -47,11 +52,32 @@ export default function DoctorResults() {
     year: 'numeric',
   });
 
+  async function handleSave() {
+    if (!user || !result || saved) return;
+
+    setSaving(true);
+    try {
+      await savePredictionRecord({
+        patientId: user.id,
+        doctorId: '', 
+        symptoms: selectedSymptoms,
+        predictedDisease: result.disease,
+        confidence: result.confidence,
+        top3: result.top3,
+      });
+      setSaved(true);
+    } catch {
+      // Error handled silently
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="font-display text-3xl font-bold text-cs-ink">Assessment Results</h1>
+        <h1 className="font-display text-3xl font-bold text-cs-ink">AI Assistant Results</h1>
         <p className="mt-1 text-sm text-cs-ink-secondary">
           Symptom Check Complete • {today} • Patient: {patientName}
         </p>
@@ -97,7 +123,7 @@ export default function DoctorResults() {
                   Our AI engine has correlated your reported symptoms of{' '}
                   {result.symptoms_used.slice(0, 3).map((s) => formatLabel(s).toLowerCase()).join(', ')}
                   {' '}with current epidemiological trends in your specific district.{' '}
-                  {result.disease} activity is currently elevated in your proximity.
+                  {result.disease} activity might be present in your proximity.
                 </p>
               </div>
             </div>
@@ -146,7 +172,7 @@ export default function DoctorResults() {
                   <span className="text-sm font-bold text-cs-ink">Outbreak Proximity</span>
                 </div>
                 <p className="mt-2 text-xs text-cs-ink-secondary">
-                  Active cluster detected within 2.4km of your current location.
+                  If there are active clusters in your area, the AI takes this into consideration.
                 </p>
               </div>
             </div>
@@ -176,9 +202,19 @@ export default function DoctorResults() {
             <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-cs-tint" />
             <p className="text-sm italic text-cs-ink-secondary">
               Disclaimer: This is an AI-powered assessment, not a medical diagnosis.
-              Please seek professional medical advice immediately if your symptoms worsen.
+              Please consult a healthcare professional for an accurate diagnosis and treatment plan.
             </p>
           </div>
+
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving || saved}
+            className="primary-button"
+          >
+            {saved ? '✓ Saved to your History' : saving ? 'Saving...' : 'Save to History'}
+          </button>
+
         </div>
 
         {/* Right Column */}
@@ -189,13 +225,13 @@ export default function DoctorResults() {
               <Sparkles className="h-8 w-8 text-white/80" />
               <h3 className="mt-3 font-display text-lg font-bold text-white">Immediate Concern?</h3>
               <p className="mt-2 text-xs text-white/80">
-                If you are experiencing difficulty breathing or loss of consciousness, call the center now.
+                If you are experiencing difficulty breathing or loss of consciousness, call an ambulance now.
               </p>
             </div>
             <div className="bg-cs-error-light p-4">
               <button type="button" className="danger-button flex w-full items-center justify-center gap-2 text-sm">
                 <Phone className="h-4 w-4" />
-                Call Health Center
+                Emergency Call
               </button>
             </div>
           </div>
@@ -207,41 +243,14 @@ export default function DoctorResults() {
               Connect with a specialist via Telehealth for a formal diagnostic plan and prescription.
             </p>
 
-            <button
-              type="button"
+            <Link
+              to="/patient/records"
               className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold text-white"
               style={{ background: 'linear-gradient(135deg, #003178, #0d47a1)' }}
             >
               <Calendar className="h-4 w-4" />
               Book a Consultation
-            </button>
-
-            <button
-              type="button"
-              className="mt-2 w-full text-center text-sm font-semibold text-cs-primary"
-            >
-              Find Nearest Clinic
-            </button>
-          </div>
-
-          {/* Regional Heatmap Mini */}
-          <div className="panel-card overflow-hidden p-0">
-            <p className="px-4 pt-4 text-[10px] font-bold uppercase tracking-[0.15em] text-cs-ink-secondary">
-              Regional Heatmap
-            </p>
-            <div className="mt-2 h-32 bg-gradient-to-br from-cs-primary/10 to-cs-green/5">
-              <div className="flex h-full items-center justify-center">
-                <Link
-                  to="/doctor/heatmap"
-                  className="rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-cs-primary shadow-sm transition-all hover:shadow-md"
-                >
-                  View Full Map
-                </Link>
-              </div>
-            </div>
-            <p className="px-4 py-3 text-xs text-cs-ink-secondary">
-              Visualizing active {result.disease} clusters in your district based on the last 24 hours of reported data.
-            </p>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Activity, Map as MapIcon, Shield, Users } from 'lucide-react';
+import { Activity, Map as MapIcon, Shield } from 'lucide-react';
 import { PublicHeader } from '../components/PublicHeader';
 
 export default function Landing() {

@@ -52,10 +52,7 @@ export default function DoctorDashboard() {
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <Link to="/doctor/predict" className="primary-button text-center">
-            New Prediction
-          </Link>
-          <Link to="/doctor/heatmap" className="secondary-button text-center">
-            View Heatmap
+            New Prediction (Quick Assist)
           </Link>
           <Link to="/doctor/patients" className="secondary-button text-center">
             All Patients

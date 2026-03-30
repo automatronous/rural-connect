@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AlertTriangle, Info, TrendingDown } from 'lucide-react';
+import { AlertTriangle, Info } from 'lucide-react';
 import DiseaseHeatmap from '../../components/DiseaseHeatmap';
 import { useAuth } from '../../context/AuthContext';
 import { getDiseases } from '../../lib/api';
