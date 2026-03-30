@@ -50,8 +50,8 @@ export default function Register() {
       <main className="mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl items-center justify-center px-4 py-12">
         <form onSubmit={handleSubmit} className="panel-card w-full max-w-2xl space-y-5">
           <div>
-            <h1 className="heading-orbitron text-3xl font-bold text-white">Create Account</h1>
-            <p className="mt-3 text-white/60">Register as a doctor or patient with real Supabase auth.</p>
+            <h1 className="font-display text-3xl font-bold text-cs-ink">Create Account</h1>
+            <p className="mt-3 text-cs-ink-secondary">Register as a doctor or patient.</p>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -103,27 +103,27 @@ export default function Register() {
             <button
               type="button"
               onClick={() => setRole('patient')}
-              className={`rounded-2xl border px-5 py-4 text-left transition ${
+              className={`rounded-2xl px-5 py-4 text-left transition-all ${
                 role === 'patient'
-                  ? 'border-blue-500/40 bg-blue-500/15 text-blue-200'
-                  : 'border-white/10 bg-white/[0.03] text-white/70'
+                  ? 'bg-cs-primary/8 ring-2 ring-cs-primary'
+                  : 'bg-cs-surface-low hover:bg-cs-surface-high'
               }`}
             >
-              <p className="heading-orbitron text-sm font-semibold">Patient</p>
-              <p className="mt-2 text-sm">Personal dashboard, records, and map access.</p>
+              <p className="font-display text-sm font-semibold text-cs-ink">Patient</p>
+              <p className="mt-2 text-sm text-cs-ink-secondary">Personal dashboard, records, and map access.</p>
             </button>
 
             <button
               type="button"
               onClick={() => setRole('doctor')}
-              className={`rounded-2xl border px-5 py-4 text-left transition ${
+              className={`rounded-2xl px-5 py-4 text-left transition-all ${
                 role === 'doctor'
-                  ? 'border-red-500/40 bg-red-500/15 text-red-200'
-                  : 'border-white/10 bg-white/[0.03] text-white/70'
+                  ? 'bg-cs-primary/8 ring-2 ring-cs-primary'
+                  : 'bg-cs-surface-low hover:bg-cs-surface-high'
               }`}
             >
-              <p className="heading-orbitron text-sm font-semibold">Doctor</p>
-              <p className="mt-2 text-sm">Patients, AI prediction, reports, and heatmap controls.</p>
+              <p className="font-display text-sm font-semibold text-cs-ink">Doctor</p>
+              <p className="mt-2 text-sm text-cs-ink-secondary">Patients, AI prediction, reports, and heatmap controls.</p>
             </button>
           </div>
 
@@ -131,11 +131,11 @@ export default function Register() {
             {loading ? 'Creating account...' : 'Register'}
           </button>
 
-          {error ? <p className="text-sm text-red-300">{error}</p> : null}
+          {error ? <p className="text-sm text-cs-error">{error}</p> : null}
 
-          <p className="text-sm text-white/60">
+          <p className="text-sm text-cs-ink-secondary">
             Already registered?{' '}
-            <Link to="/login" className="text-red-300 hover:text-red-200">
+            <Link to="/login" className="font-semibold text-cs-primary hover:underline">
               Sign in
             </Link>
           </p>

@@ -37,8 +37,8 @@ export default function DoctorPatients() {
   return (
     <div className="space-y-6">
       <section className="panel-card">
-        <h1 className="heading-orbitron text-3xl font-bold text-white">Patients</h1>
-        <p className="mt-3 text-white/60">
+        <h1 className="font-display text-2xl font-bold text-cs-ink">Patients</h1>
+        <p className="mt-3 text-cs-ink-secondary">
           Search by name or email, filter by latest predicted disease, and narrow results by last visit date.
         </p>
 
@@ -56,11 +56,9 @@ export default function DoctorPatients() {
             onChange={(event) => setPredictedDisease(event.target.value)}
             className="field-select"
           >
-            <option value="" className="bg-[#0b1118]">
-              All predicted diseases
-            </option>
+            <option value="">All predicted diseases</option>
             {predictionOptions.map((option) => (
-              <option key={option} value={option} className="bg-[#0b1118]">
+              <option key={option} value={option}>
                 {option}
               </option>
             ))}
@@ -71,11 +69,11 @@ export default function DoctorPatients() {
         </div>
       </section>
 
-      {error ? <div className="panel-card text-red-300">{error}</div> : null}
+      {error ? <div className="panel-card text-cs-error">{error}</div> : null}
 
       <div className="table-shell">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-white/10">
+          <table className="min-w-full">
             <thead className="table-head">
               <tr>
                 <th className="table-cell">Name</th>
@@ -86,20 +84,20 @@ export default function DoctorPatients() {
                 <th className="table-cell text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody>
               {filteredRows.length ? (
                 filteredRows.map((row) => (
-                  <tr key={row.id}>
+                  <tr key={row.id} className="border-t border-cs-surface-high">
                     <td className="table-cell">
-                      <div className="font-medium text-white">{row.name}</div>
-                      <div className="text-xs text-white/50">{row.email}</div>
+                      <div className="font-medium text-cs-ink">{row.name}</div>
+                      <div className="text-xs text-cs-ink-secondary">{row.email}</div>
                     </td>
                     <td className="table-cell">{row.age ?? 'N/A'}</td>
                     <td className="table-cell">{row.blood_group ?? 'N/A'}</td>
                     <td className="table-cell">{formatDate(row.lastVisitDate)}</td>
                     <td className="table-cell">{row.lastPredictedDisease ?? 'N/A'}</td>
                     <td className="table-cell text-right">
-                      <Link to={`/doctor/patients/${row.id}`} className="secondary-button inline-flex py-2">
+                      <Link to={`/doctor/patients/${row.id}`} className="secondary-button inline-flex py-2 text-sm">
                         View
                       </Link>
                     </td>
@@ -107,7 +105,7 @@ export default function DoctorPatients() {
                 ))
               ) : (
                 <tr>
-                  <td className="table-cell py-8 text-center text-white/50" colSpan={6}>
+                  <td className="table-cell py-8 text-center text-cs-ink-secondary" colSpan={6}>
                     No patients match the current filters.
                   </td>
                 </tr>

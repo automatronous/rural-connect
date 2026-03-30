@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Brain,
@@ -13,11 +13,9 @@ import {
   Wind,
   Zap,
 } from 'lucide-react';
-import { LoadingScreen } from '../../components/LoadingScreen';
 import { useAuth } from '../../context/AuthContext';
 import { predictDisease } from '../../lib/api';
-import { fetchPatients } from '../../lib/data';
-import type { PredictionApiResponse, Profile } from '../../lib/types';
+import type { PredictionApiResponse } from '../../lib/types';
 
 const SYMPTOM_ICONS: Record<string, { icon: React.ReactNode; color: string }> = {
   Fever: { icon: <Thermometer className="h-6 w-6" />, color: '#ba1a1a' },
@@ -41,38 +39,13 @@ const QUICK_SYMPTOMS = [
   { label: 'Nausea', key: 'nausea' },
 ];
 
-export default function DoctorPredict() {
+export default function PatientPredict() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const [patients, setPatients] = useState<Profile[]>([]);
-  const [selectedPatientId, setSelectedPatientId] = useState('');
+  const { user, profile } = useAuth();
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(true);
   const [predicting, setPredicting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let active = true;
-
-    async function loadPatients() {
-      try {
-        const nextPatients = await fetchPatients();
-        if (!active) return;
-        setPatients(nextPatients);
-        setSelectedPatientId((current) => current || nextPatients[0]?.id || '');
-      } catch (loadError) {
-        if (active) {
-          setError(loadError instanceof Error ? loadError.message : 'Failed to load patients.');
-        }
-      } finally {
-        if (active) setLoading(false);
-      }
-    }
-
-    void loadPatients();
-    return () => { active = false; };
-  }, []);
 
   function toggleSymptom(key: string) {
     setSelectedSymptoms((current) =>
@@ -88,29 +61,25 @@ export default function DoctorPredict() {
   }, [search]);
 
   async function handleContinue() {
-    if (!user || !selectedPatientId || !selectedSymptoms.length) return;
+    if (!user || !selectedSymptoms.length) return;
 
     setPredicting(true);
     setError(null);
 
     try {
-      const result: PredictionApiResponse = await predictDisease(selectedSymptoms, selectedPatientId, user.id);
-      navigate('/doctor/results', {
+      // For self-check, pass empty string or user.id for doctorId
+      const result: PredictionApiResponse = await predictDisease(selectedSymptoms, user.id, '');
+      navigate('/patient/results', {
         state: {
           result,
           selectedSymptoms,
-          selectedPatientId,
-          patientName: patients.find((p) => p.id === selectedPatientId)?.name ?? 'Patient',
+          patientName: profile?.name ?? 'Patient',
         },
       });
     } catch (predictionError) {
       setError(predictionError instanceof Error ? predictionError.message : 'Prediction failed.');
       setPredicting(false);
     }
-  }
-
-  if (loading) {
-    return <LoadingScreen label="Loading prediction tool..." />;
   }
 
   const totalSteps = 2;
@@ -126,7 +95,7 @@ export default function DoctorPredict() {
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-cs-primary">
               Step {currentStep} of {totalSteps}
             </p>
-            <h1 className="mt-1 font-display text-2xl font-bold text-cs-ink">Symptom Screening</h1>
+            <h1 className="mt-1 font-display text-2xl font-bold text-cs-ink">AI Symptom Checker</h1>
           </div>
           <span className="text-sm text-cs-ink-secondary">{progress}% Complete</span>
         </div>
@@ -134,22 +103,6 @@ export default function DoctorPredict() {
           <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
         </div>
       </div>
-
-      {/* Patient Selector */}
-      <select
-        value={selectedPatientId}
-        onChange={(e) => {
-          setSelectedPatientId(e.target.value);
-          setSelectedSymptoms([]);
-        }}
-        className="field-select max-w-md"
-      >
-        {patients.map((patient) => (
-          <option key={patient.id} value={patient.id}>
-            {patient.name} ({patient.email})
-          </option>
-        ))}
-      </select>
 
       {/* Main Question */}
       <div>
@@ -223,10 +176,10 @@ export default function DoctorPredict() {
         <button
           type="button"
           onClick={handleContinue}
-          disabled={predicting || !selectedSymptoms.length || !selectedPatientId}
+          disabled={predicting || !selectedSymptoms.length}
           className="primary-button flex items-center gap-2"
         >
-          {predicting ? 'Analyzing...' : 'Continue to Details →'}
+          {predicting ? 'Analyzing...' : 'Continue to Results →'}
         </button>
       </div>
 
