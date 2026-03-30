@@ -1,8 +1,10 @@
+import type { RealtimeChannelStatus } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 import type {
   DiseaseReport,
   DiseaseReportInput,
   DoctorDashboardData,
+  LocationPoint,
   MedicalRecord,
   MedicalRecordView,
   PatientDashboardData,
@@ -65,6 +67,57 @@ export function subscribeToDiseaseReports(onInsert: (report: DiseaseReport) => v
 export async function createDiseaseReport(input: DiseaseReportInput) {
   const { error } = await supabase.from('disease_reports').insert(input);
   if (error) throw error;
+}
+
+export async function fetchDoctorLocations(limit = 250) {
+  const { data, error } = await supabase
+    .from('locations')
+    .select('*')
+    .eq('user_role', 'patient')
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+  return (data as LocationPoint[]) ?? [];
+}
+
+export function subscribeToPatientLocations(input: {
+  onInsert: (location: LocationPoint) => void;
+  onStatus?: (status: RealtimeChannelStatus) => void;
+}) {
+  const channel = supabase
+    .channel(`patient_locations_${Date.now()}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'locations',
+        filter: 'user_role=eq.patient',
+      },
+      (payload) => {
+        input.onInsert(payload.new as LocationPoint);
+      },
+    )
+    .subscribe((status) => {
+      input.onStatus?.(status);
+    });
+
+  return () => {
+    void supabase.removeChannel(channel);
+  };
+}
+
+export async function addTestPatientLocation() {
+  const { data, error } = await supabase.rpc('add_test_patient_location');
+  if (error) throw error;
+
+  const location = Array.isArray(data) ? data[0] : data;
+  if (!location) {
+    throw new Error('Supabase did not return the new test location.');
+  }
+
+  return location as LocationPoint;
 }
 
 export async function fetchPatients() {

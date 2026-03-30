@@ -107,3 +107,44 @@
   color: rgba(255, 255, 255, 0.75) !important;
   border-color: rgba(255, 255, 255, 0.12) !important;
 }
+
+.doctor-heatmap-shell .leaflet-container {
+  background:
+    radial-gradient(circle at top, rgba(255, 76, 76, 0.18), transparent 24%),
+    linear-gradient(180deg, #06070b 0%, #090d12 100%);
+}
+
+.doctor-heatmap-shell .leaflet-control-zoom {
+  border: 0;
+  box-shadow: none;
+}
+
+.doctor-heatmap-shell .leaflet-control-zoom a {
+  height: 42px;
+  width: 42px;
+  line-height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+}
+
+.doctor-heatmap-shell .leaflet-control-zoom a + a {
+  margin-top: 8px;
+}
+
+.doctor-heatmap-shell .leaflet-control-zoom a:hover {
+  background: rgba(255, 79, 79, 0.18) !important;
+  color: white !important;
+}
+
+.doctor-heatmap-shell .leaflet-bar {
+  border: 0;
+  background: transparent;
+}
+
+.doctor-heatmap-shell .leaflet-control-attribution {
+  border-radius: 999px;
+  margin: 0 14px 14px 0 !important;
+  padding: 6px 10px !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+}
