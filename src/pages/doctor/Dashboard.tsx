@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { fetchDoctorDashboardData } from '../../lib/data';
 import type { DoctorDashboardData } from '../../lib/types';
 import { formatDate } from '../../lib/utils';
+import { Activity, BarChart3, FileText, MapPin } from 'lucide-react';
 
 export default function DoctorDashboard() {
   const { profile, user } = useAuth();
@@ -34,12 +35,19 @@ export default function DoctorDashboard() {
     return <LoadingScreen label="Loading doctor dashboard..." />;
   }
 
+  const statIcons = [
+    <Activity className="h-5 w-5" />,
+    <BarChart3 className="h-5 w-5" />,
+    <FileText className="h-5 w-5" />,
+    <MapPin className="h-5 w-5" />,
+  ];
+
   return (
     <div className="space-y-8">
       <section className="panel-card">
-        <p className="text-sm uppercase tracking-[0.24em] text-white/55">Doctor Dashboard</p>
-        <h1 className="heading-orbitron mt-4 text-4xl font-bold text-white">Welcome Dr. {profile?.name ?? ''}</h1>
-        <p className="mt-3 text-white/65">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-cs-ink-secondary">Doctor Dashboard</p>
+        <h1 className="mt-4 font-display text-3xl font-bold text-cs-ink">Welcome Dr. {profile?.name ?? ''}</h1>
+        <p className="mt-3 text-cs-ink-secondary">
           Review patient activity, AI prediction usage, uploaded records, and disease reporting from one control surface.
         </p>
 
@@ -50,16 +58,24 @@ export default function DoctorDashboard() {
           <a href="#doctor-live-heatmap" className="secondary-button text-center">
             Live Heatmap
           </a>
+            New Prediction (Quick Assist)
+          </Link>
           <Link to="/doctor/patients" className="secondary-button text-center">
             All Patients
           </Link>
         </div>
       </section>
 
-      {error ? <div className="panel-card text-red-300">{error}</div> : null}
+      {error ? <div className="panel-card text-cs-error">{error}</div> : null}
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {data?.stats.map((stat) => <StatCard key={stat.label} {...stat} />)}
+        {data?.stats.map((stat, i) => (
+          <StatCard
+            key={stat.label}
+            {...stat}
+            icon={statIcons[i]}
+          />
+        ))}
       </section>
 
       <DoctorHeatMap />
@@ -67,14 +83,14 @@ export default function DoctorDashboard() {
       <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
         <div className="panel-card">
           <div className="flex items-center justify-between">
-            <h2 className="heading-orbitron text-2xl font-bold text-white">Recent Predictions</h2>
-            <Link to="/doctor/predict" className="text-sm text-red-300">
+            <h2 className="font-display text-xl font-bold text-cs-ink">Recent Predictions</h2>
+            <Link to="/doctor/predict" className="text-sm font-semibold text-cs-primary">
               Open tool
             </Link>
           </div>
 
           <div className="mt-6 overflow-x-auto">
-            <table className="min-w-full divide-y divide-white/10">
+            <table className="min-w-full">
               <thead className="table-head">
                 <tr>
                   <th className="table-cell">Patient</th>
@@ -83,19 +99,19 @@ export default function DoctorDashboard() {
                   <th className="table-cell">Date</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/10">
+              <tbody>
                 {data?.recentPredictions.length ? (
                   data.recentPredictions.map((prediction) => (
-                    <tr key={prediction.id}>
+                    <tr key={prediction.id} className="border-t border-cs-surface-high">
                       <td className="table-cell">{prediction.patientName}</td>
-                      <td className="table-cell font-medium text-white">{prediction.predicted_disease}</td>
+                      <td className="table-cell font-medium text-cs-ink">{prediction.predicted_disease}</td>
                       <td className="table-cell">{prediction.confidence.toFixed(1)}%</td>
                       <td className="table-cell">{formatDate(prediction.created_at)}</td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td className="table-cell py-8 text-center text-white/50" colSpan={4}>
+                    <td className="table-cell py-8 text-center text-cs-ink-secondary" colSpan={4}>
                       No predictions run yet.
                     </td>
                   </tr>
@@ -106,22 +122,22 @@ export default function DoctorDashboard() {
         </div>
 
         <div className="panel-card">
-          <h2 className="heading-orbitron text-2xl font-bold text-white">Recent Patients</h2>
+          <h2 className="font-display text-xl font-bold text-cs-ink">Recent Patients</h2>
           <div className="mt-6 space-y-4">
             {data?.recentPatients.length ? (
               data.recentPatients.map((patient) => (
-                <article key={patient.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <article key={patient.id} className="rounded-2xl bg-cs-surface-low p-4">
                   <div className="flex items-center justify-between gap-3">
-                    <p className="font-semibold text-white">{patient.name}</p>
-                    <span className="text-sm text-white/45">{formatDate(patient.lastVisitDate)}</span>
+                    <p className="font-semibold text-cs-ink">{patient.name}</p>
+                    <span className="text-sm text-cs-ink-secondary">{formatDate(patient.lastVisitDate)}</span>
                   </div>
-                  <p className="mt-2 text-sm text-white/60">
+                  <p className="mt-2 text-sm text-cs-ink-secondary">
                     Age {patient.age ?? 'N/A'} • Blood Group {patient.blood_group ?? 'N/A'}
                   </p>
                 </article>
               ))
             ) : (
-              <p className="text-white/55">No patients connected yet.</p>
+              <p className="text-cs-ink-secondary">No patients connected yet.</p>
             )}
           </div>
         </div>

@@ -1,3 +1,12 @@
+import {
+  Brain,
+  CalendarCheck,
+  FileText,
+  LayoutDashboard,
+  Map as MapIcon,
+  Users,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import type { Role } from './types';
 
 export const APP_NAME = 'RuralConnect';
@@ -42,10 +51,15 @@ export const NAV_LINKS: Record<Role, Array<{ label: string; to: string }>> = {
     { label: 'AI Predictor', to: '/doctor/predict' },
   ],
   patient: [
-    { label: 'Dashboard', to: '/patient/dashboard' },
-    { label: 'My Records', to: '/patient/records' },
-    { label: 'Disease Map', to: '/patient/map' },
-    { label: 'Profile', to: '/patient/profile' },
+    { label: 'Dashboard', to: '/patient/dashboard', icon: LayoutDashboard },
+    { label: 'View previous cases', to: '/patient/history', icon: FileText },
+    { label: 'Add new case', to: '/patient/predict', icon: Brain },
+    { label: 'Medical Records', to: '/patient/records', icon: CalendarCheck },
+  ],
+  doctor: [
+    { label: 'Dashboard', to: '/doctor/dashboard', icon: LayoutDashboard },
+    { label: 'Patient Cases', to: '/doctor/patients', icon: Users },
+    { label: 'Disease Heatmap', to: '/doctor/heatmap', icon: MapIcon },
   ],
 };
 

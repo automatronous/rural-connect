@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { getSymptoms } from '../lib/api';
 import { SYMPTOM_CATEGORY_ORDER } from '../lib/constants';
 import { formatLabel, getSymptomCategory } from '../lib/utils';
+import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 
 interface SymptomSelectorProps {
   selectedSymptoms: string[];
@@ -85,30 +86,33 @@ export default function SymptomSelector({ selectedSymptoms, onChange }: SymptomS
     <div className="panel-card space-y-5">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h3 className="heading-orbitron text-2xl font-bold text-white">Symptom Selector</h3>
-          <p className="mt-2 text-sm text-white/60">{selectedSymptoms.length} symptom(s) selected</p>
+          <h3 className="font-display text-xl font-bold text-cs-ink">Symptom Selector</h3>
+          <p className="mt-1 text-sm text-cs-ink-secondary">{selectedSymptoms.length} symptom(s) selected</p>
         </div>
 
         <div className="flex w-full gap-3 md:w-auto">
-          <input
-            type="text"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            className="field-input md:min-w-[280px]"
-            placeholder="Search symptoms"
-          />
+          <div className="relative flex-1 md:min-w-[280px]">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-cs-ink-secondary/40" />
+            <input
+              type="text"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              className="field-input pl-10"
+              placeholder="Search symptoms"
+            />
+          </div>
           <button type="button" className="secondary-button whitespace-nowrap" onClick={() => onChange([])}>
             Clear all
           </button>
         </div>
       </div>
 
-      {loading ? <p className="text-white/60">Loading symptoms...</p> : null}
-      {error ? <p className="text-red-300">{error}</p> : null}
+      {loading ? <p className="text-cs-ink-secondary">Loading symptoms...</p> : null}
+      {error ? <p className="text-cs-error">{error}</p> : null}
 
       <div className="space-y-3">
         {groupedSymptoms.map((group) => (
-          <div key={group.category} className="rounded-2xl border border-white/10 bg-black/10">
+          <div key={group.category} className="rounded-2xl bg-cs-surface-low">
             <button
               type="button"
               onClick={() =>
@@ -119,22 +123,30 @@ export default function SymptomSelector({ selectedSymptoms, onChange }: SymptomS
               }
               className="flex w-full items-center justify-between px-5 py-4 text-left"
             >
-              <span className="heading-orbitron text-sm font-semibold text-white">{group.category}</span>
-              <span className="text-sm text-white/50">{openSections[group.category] ? 'Hide' : 'Show'}</span>
+              <span className="font-display text-sm font-bold text-cs-ink">{group.category}</span>
+              {openSections[group.category] ? (
+                <ChevronUp className="h-4 w-4 text-cs-ink-secondary" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-cs-ink-secondary" />
+              )}
             </button>
 
             {openSections[group.category] ? (
-              <div className="grid gap-3 border-t border-white/10 px-5 py-4 md:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-2 px-5 pb-4 md:grid-cols-2 xl:grid-cols-3">
                 {group.symptoms.map((symptom) => (
                   <label
                     key={symptom}
-                    className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/85 transition hover:bg-white/[0.06]"
+                    className={`flex cursor-pointer items-start gap-3 rounded-xl px-4 py-3 text-sm transition-all ${
+                      selectedSymptoms.includes(symptom)
+                        ? 'bg-cs-primary/8 ring-1 ring-cs-primary/30 text-cs-ink'
+                        : 'bg-white text-cs-ink-secondary hover:bg-cs-surface-high'
+                    }`}
                   >
                     <input
                       type="checkbox"
                       checked={selectedSymptoms.includes(symptom)}
                       onChange={() => toggleSymptom(symptom)}
-                      className="mt-1 h-4 w-4 rounded border-white/20 bg-transparent text-red-500 focus:ring-red-500"
+                      className="mt-0.5 h-4 w-4 rounded border-cs-outline text-cs-primary focus:ring-cs-primary"
                     />
                     <span>{formatLabel(symptom)}</span>
                   </label>
