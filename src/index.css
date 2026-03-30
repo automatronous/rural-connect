@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   html {
@@ -12,11 +12,7 @@
   }
 
   body {
-    @apply min-h-screen bg-[#05070a] font-['Inter'] text-white antialiased;
-    background-image:
-      radial-gradient(circle at top, rgba(255, 68, 68, 0.18), transparent 28%),
-      radial-gradient(circle at bottom right, rgba(68, 136, 255, 0.16), transparent 24%),
-      linear-gradient(180deg, #09111a 0%, #05070a 45%, #05070a 100%);
+    @apply min-h-screen bg-cs-surface font-sans text-cs-ink antialiased;
   }
 
   #root {
@@ -25,85 +21,219 @@
 }
 
 @layer components {
+  /* ── Layout Shell ── */
   .app-shell {
-    @apply bg-[#05070a] text-white;
+    @apply bg-cs-surface text-cs-ink;
   }
 
+  /* ── Cards ── */
   .panel-card {
-    @apply rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-md;
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+    @apply rounded-2xl bg-white p-6;
+    box-shadow: 0 20px 40px rgba(25, 28, 30, 0.06);
   }
 
+  .panel-card-flat {
+    @apply rounded-2xl bg-cs-surface-low p-6;
+  }
+
+  /* ── Form Fields ── */
   .field-input {
-    @apply w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-red-500 focus:outline-none;
+    @apply w-full rounded-xl bg-cs-surface-high px-4 py-3 text-cs-ink transition-all duration-200 focus:outline-none;
+    border: 1px solid rgba(195, 198, 212, 0.2);
+  }
+  .field-input::placeholder {
+    @apply text-cs-ink-secondary/50;
+  }
+  .field-input:focus {
+    @apply bg-white;
+    border-color: transparent;
+    box-shadow: 0 2px 0 0 #2b5bb5;
   }
 
   .field-select {
-    @apply w-full appearance-none rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-red-500 focus:outline-none;
+    @apply w-full appearance-none rounded-xl bg-cs-surface-high px-4 py-3 text-cs-ink transition-all duration-200 focus:outline-none;
+    border: 1px solid rgba(195, 198, 212, 0.2);
+  }
+  .field-select:focus {
+    @apply bg-white;
+    border-color: transparent;
+    box-shadow: 0 2px 0 0 #2b5bb5;
   }
 
   .field-textarea {
-    @apply min-h-[120px] w-full resize-y rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/40 focus:border-red-500 focus:outline-none;
+    @apply min-h-[120px] w-full resize-y rounded-xl bg-cs-surface-high px-4 py-3 text-cs-ink transition-all duration-200 focus:outline-none;
+    border: 1px solid rgba(195, 198, 212, 0.2);
+  }
+  .field-textarea::placeholder {
+    @apply text-cs-ink-secondary/50;
+  }
+  .field-textarea:focus {
+    @apply bg-white;
+    border-color: transparent;
+    box-shadow: 0 2px 0 0 #2b5bb5;
   }
 
+  /* ── Buttons ── */
   .primary-button {
-    @apply rounded-xl bg-red-500 px-6 py-3 font-bold text-black transition-all duration-200 hover:bg-red-400 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply rounded-full px-6 py-3 font-bold text-white transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50;
+    background: linear-gradient(135deg, #003178, #0d47a1);
+  }
+  .primary-button:hover:not(:disabled) {
+    box-shadow: 0 8px 24px rgba(0, 49, 120, 0.3);
+    transform: translateY(-1px);
   }
 
   .secondary-button {
-    @apply rounded-xl border border-white/20 bg-white/5 px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-white/10;
+    @apply rounded-full bg-cs-surface-high px-6 py-3 font-semibold text-cs-ink transition-all duration-200;
+  }
+  .secondary-button:hover {
+    @apply bg-cs-surface-highest;
   }
 
+  .danger-button {
+    @apply rounded-full px-6 py-3 font-bold text-white transition-all duration-200;
+    background: linear-gradient(135deg, #ba1a1a, #d32f2f);
+  }
+  .danger-button:hover {
+    box-shadow: 0 8px 24px rgba(186, 26, 26, 0.3);
+    transform: translateY(-1px);
+  }
+
+  /* ── Typography ── */
   .heading-orbitron {
-    @apply font-['Orbitron'] tracking-wider;
+    @apply font-display tracking-tight;
   }
 
+  /* ── Navigation ── */
   .nav-link {
-    @apply rounded-full px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-200 hover:bg-white/5 hover:text-white;
+    @apply flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-cs-ink-secondary transition-all duration-200;
+  }
+  .nav-link:hover {
+    @apply bg-cs-surface-high text-cs-ink;
   }
 
   .nav-link-active {
-    @apply bg-white/10 text-white;
+    @apply font-semibold text-cs-primary;
+    background-color: rgba(0, 49, 120, 0.08);
   }
 
+  /* ── Badges ── */
   .badge-doctor {
-    @apply border border-red-500/30 bg-red-500/15 text-red-300;
+    @apply bg-cs-primary/10 text-cs-primary;
   }
 
   .badge-patient {
-    @apply border border-blue-500/30 bg-blue-500/15 text-blue-300;
+    @apply bg-cs-green/10 text-cs-green;
   }
 
+  /* ── Tables ── */
   .table-shell {
-    @apply overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md;
+    @apply overflow-hidden rounded-2xl bg-white;
+    box-shadow: 0 20px 40px rgba(25, 28, 30, 0.06);
   }
 
   .table-head {
-    @apply bg-white/[0.03] text-left text-xs uppercase tracking-[0.2em] text-white/50;
+    @apply bg-cs-surface-low text-left text-xs uppercase tracking-[0.2em] text-cs-ink-secondary;
   }
 
   .table-cell {
-    @apply px-4 py-3 text-sm text-white/80;
+    @apply px-4 py-3 text-sm text-cs-ink/80;
+  }
+
+  /* ── Alert Cards (Leaf Shape) ── */
+  .alert-card-danger {
+    @apply bg-cs-error-light p-5;
+    border-radius: 1rem 1rem 3rem 1rem;
+  }
+
+  .alert-card-info {
+    @apply p-5;
+    background: #e8f7ff;
+    border-radius: 1rem 1rem 1rem 3rem;
+  }
+
+  .alert-card-warning {
+    @apply p-5;
+    background: #fff8e1;
+    border-radius: 1rem 3rem 1rem 1rem;
+  }
+
+  /* ── Glassmorphic Surface ── */
+  .glass-card {
+    @apply rounded-2xl p-6;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 40px rgba(25, 28, 30, 0.06);
+  }
+
+  /* ── Sidebar ── */
+  .sidebar-container {
+    @apply fixed left-0 top-0 z-30 flex h-screen w-[220px] flex-col bg-cs-surface-low px-3 py-6;
+  }
+
+  .sidebar-brand {
+    @apply mb-8 px-3;
+  }
+
+  .sidebar-nav {
+    @apply flex flex-1 flex-col gap-1;
+  }
+
+  .sidebar-emergency {
+    @apply mt-auto px-1 pt-4;
   }
 }
 
+/* ── Leaflet Overrides ── */
 .leaflet-container {
   height: 100%;
   width: 100%;
-  background: #05070a;
+  background: #f7f9fb;
   font-family: Inter, sans-serif;
+  border-radius: 1rem;
 }
 
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
-  background: rgba(5, 7, 10, 0.96);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.96);
+  color: #191c1e;
+  border: none;
+  box-shadow: 0 20px 40px rgba(25, 28, 30, 0.12);
+  border-radius: 1rem;
 }
 
 .leaflet-control-attribution,
 .leaflet-control-zoom a {
-  background: rgba(5, 7, 10, 0.8) !important;
-  color: rgba(255, 255, 255, 0.75) !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: #434652 !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(25, 28, 30, 0.08) !important;
+}
+
+/* ── Donut Chart ── */
+.donut-ring {
+  transition: stroke-dashoffset 1s ease-out;
+}
+
+/* ── Progress Bar ── */
+.progress-bar {
+  @apply h-2 overflow-hidden rounded-full bg-cs-surface-high;
+}
+.progress-bar-fill {
+  @apply h-full rounded-full transition-all duration-700;
+  background: linear-gradient(90deg, #003178, #0d47a1);
+}
+
+/* ── Custom Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-cs-outline/30;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-cs-outline/50;
 }

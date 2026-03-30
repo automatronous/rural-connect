@@ -138,21 +138,21 @@ export default function DoctorPatientDetail() {
 
   return (
     <div className="space-y-6">
-      <Link to="/doctor/patients" className="text-sm text-red-300">
-        Back to patients
+      <Link to="/doctor/patients" className="text-sm font-semibold text-cs-primary hover:underline">
+        ← Back to patients
       </Link>
 
       <section className="panel-card">
-        <p className="text-sm uppercase tracking-[0.24em] text-white/55">Patient Detail</p>
-        <h1 className="heading-orbitron mt-4 text-4xl font-bold text-white">{patient?.name ?? 'Patient'}</h1>
-        <div className="mt-4 flex flex-wrap gap-4 text-sm text-white/65">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-cs-ink-secondary">Patient Detail</p>
+        <h1 className="mt-4 font-display text-3xl font-bold text-cs-ink">{patient?.name ?? 'Patient'}</h1>
+        <div className="mt-4 flex flex-wrap gap-4 text-sm text-cs-ink-secondary">
           <span>{patient?.email}</span>
           <span>Age {patient?.age ?? 'N/A'}</span>
           <span>Blood Group {patient?.blood_group ?? 'N/A'}</span>
         </div>
       </section>
 
-      {error ? <div className="panel-card text-red-300">{error}</div> : null}
+      {error ? <div className="panel-card text-cs-error">{error}</div> : null}
 
       <div className="flex flex-wrap gap-3">
         {[
@@ -185,7 +185,7 @@ export default function DoctorPatientDetail() {
       {activeTab === 'visits' ? (
         <div className="space-y-6">
           <section className="panel-card">
-            <h2 className="heading-orbitron text-2xl font-bold text-white">Add Visit Note</h2>
+            <h2 className="font-display text-xl font-bold text-cs-ink">Add Visit Note</h2>
             <form onSubmit={handleAddVisit} className="mt-6 grid gap-4">
               <input type="date" value={visitDate} onChange={(event) => setVisitDate(event.target.value)} className="field-input" />
               <textarea
@@ -208,7 +208,7 @@ export default function DoctorPatientDetail() {
 
           <div className="table-shell">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-white/10">
+              <table className="min-w-full">
                 <thead className="table-head">
                   <tr>
                     <th className="table-cell">Date</th>
@@ -217,10 +217,10 @@ export default function DoctorPatientDetail() {
                     <th className="table-cell">Diagnosis</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/10">
+                <tbody>
                   {visits.length ? (
                     visits.map((visit) => (
-                      <tr key={visit.id}>
+                      <tr key={visit.id} className="border-t border-cs-surface-high">
                         <td className="table-cell">{formatDate(visit.visit_date)}</td>
                         <td className="table-cell">{visit.doctorName}</td>
                         <td className="table-cell">{visit.notes ?? 'N/A'}</td>
@@ -229,7 +229,7 @@ export default function DoctorPatientDetail() {
                     ))
                   ) : (
                     <tr>
-                      <td className="table-cell py-8 text-center text-white/50" colSpan={4}>
+                      <td className="table-cell py-8 text-center text-cs-ink-secondary" colSpan={4}>
                         No visits recorded yet.
                       </td>
                     </tr>
@@ -263,7 +263,7 @@ export default function DoctorPatientDetail() {
           ) : null}
 
           <section className="space-y-4">
-            <h2 className="heading-orbitron text-2xl font-bold text-white">Prediction History</h2>
+            <h2 className="font-display text-xl font-bold text-cs-ink">Prediction History</h2>
             <PredictionHistoryTable predictions={predictions} />
           </section>
         </div>
@@ -271,7 +271,7 @@ export default function DoctorPatientDetail() {
 
       {activeTab === 'history' ? (
         <div className="space-y-4">
-          <h2 className="heading-orbitron text-2xl font-bold text-white">All Predictions</h2>
+          <h2 className="font-display text-xl font-bold text-cs-ink">All Predictions</h2>
           <PredictionHistoryTable predictions={predictions} />
         </div>
       ) : null}

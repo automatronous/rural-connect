@@ -59,8 +59,8 @@ export default function Login() {
       <main className="mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl items-center justify-center px-4 py-12">
         <form onSubmit={handleSubmit} className="panel-card w-full max-w-md space-y-5">
           <div>
-            <h1 className="heading-orbitron text-3xl font-bold text-white">Sign In</h1>
-            <p className="mt-3 text-white/60">Access the correct doctor or patient workspace.</p>
+            <h1 className="font-display text-3xl font-bold text-cs-ink">Sign In</h1>
+            <p className="mt-3 text-cs-ink-secondary">Access the correct doctor or patient workspace.</p>
           </div>
 
           <input
@@ -85,11 +85,11 @@ export default function Login() {
             {loading ? 'Signing in...' : 'Login'}
           </button>
 
-          {error ? <p className="text-sm text-red-300">{error}</p> : null}
+          {error ? <p className="text-sm text-cs-error">{error}</p> : null}
 
-          <p className="text-sm text-white/60">
+          <p className="text-sm text-cs-ink-secondary">
             New here?{' '}
-            <Link to="/register" className="text-red-300 hover:text-red-200">
+            <Link to="/register" className="font-semibold text-cs-primary hover:underline">
               Create an account
             </Link>
           </p>

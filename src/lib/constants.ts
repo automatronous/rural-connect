@@ -1,3 +1,13 @@
+import {
+  Brain,
+  CalendarCheck,
+  FileText,
+  LayoutDashboard,
+  Map as MapIcon,
+  Settings,
+  Users,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import type { Role } from './types';
 
 export const APP_NAME = 'RuralConnect';
@@ -35,18 +45,26 @@ export const FALLBACK_DISEASE_COLORS = [
   '#f9844a',
 ] as const;
 
-export const NAV_LINKS: Record<Role, Array<{ label: string; to: string }>> = {
-  doctor: [
-    { label: 'Dashboard', to: '/doctor/dashboard' },
-    { label: 'Patients', to: '/doctor/patients' },
-    { label: 'Heatmap', to: '/doctor/heatmap' },
-    { label: 'AI Predictor', to: '/doctor/predict' },
-  ],
+export interface NavItem {
+  label: string;
+  to: string;
+  icon: LucideIcon;
+}
+
+export const NAV_LINKS: Record<Role, NavItem[]> = {
   patient: [
-    { label: 'Dashboard', to: '/patient/dashboard' },
-    { label: 'My Records', to: '/patient/records' },
-    { label: 'Disease Map', to: '/patient/map' },
-    { label: 'Profile', to: '/patient/profile' },
+    { label: 'Dashboard', to: '/patient/dashboard', icon: LayoutDashboard },
+    { label: 'AI Symptom Checker', to: '/patient/map', icon: Brain },
+    { label: 'Book Doctor', to: '/patient/records', icon: CalendarCheck },
+    { label: 'Disease Heatmap', to: '/patient/map', icon: MapIcon },
+    { label: 'Medical Records', to: '/patient/records', icon: FileText },
+    { label: 'Profile / Settings', to: '/patient/profile', icon: Settings },
+  ],
+  doctor: [
+    { label: 'Dashboard', to: '/doctor/dashboard', icon: LayoutDashboard },
+    { label: 'AI Symptom Checker', to: '/doctor/predict', icon: Brain },
+    { label: 'Patients', to: '/doctor/patients', icon: Users },
+    { label: 'Disease Heatmap', to: '/doctor/heatmap', icon: MapIcon },
   ],
 };
 

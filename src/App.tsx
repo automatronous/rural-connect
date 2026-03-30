@@ -12,6 +12,7 @@ import DoctorHeatmap from './pages/doctor/Heatmap';
 import DoctorPatientDetail from './pages/doctor/PatientDetail';
 import DoctorPatients from './pages/doctor/Patients';
 import DoctorPredict from './pages/doctor/Predict';
+import DoctorResults from './pages/doctor/Results';
 import PatientDashboard from './pages/patient/Dashboard';
 import PatientMap from './pages/patient/Map';
 import PatientProfile from './pages/patient/Profile';
@@ -68,6 +69,7 @@ export default function App() {
             <Route path="/doctor/patients/:id" element={<DoctorPatientDetail />} />
             <Route path="/doctor/heatmap" element={<DoctorHeatmap />} />
             <Route path="/doctor/predict" element={<DoctorPredict />} />
+            <Route path="/doctor/results" element={<DoctorResults />} />
           </Route>
         </Route>
 
