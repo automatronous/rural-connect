@@ -18,17 +18,17 @@ interface DiseaseHeatmapProps {
 function buildPopupContent(report: DiseaseReport) {
   return `
     <div style="min-width: 200px; font-family: Inter, sans-serif;">
-      <div style="color: #003178; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;">${report.disease_name}</div>
-      <div style="margin-top: 6px; font-size: 16px; font-weight: 700; color: #191c1e;">${report.region_name}</div>
-      <div style="margin-top: 8px; color: #434652; font-size: 12px;">Cases: ${report.case_count}</div>
-      <div style="margin-top: 3px; color: #434652; font-size: 12px;">Report Date: ${formatDate(report.report_date)}</div>
+      <div style="color: #0066CC; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;">${report.disease_name}</div>
+      <div style="margin-top: 6px; font-size: 16px; font-weight: 700; color: #1A2B4A;">${report.region_name}</div>
+      <div style="margin-top: 8px; color: #4A5568; font-size: 12px;">Cases: ${report.case_count}</div>
+      <div style="margin-top: 3px; color: #4A5568; font-size: 12px;">Report Date: ${formatDate(report.report_date)}</div>
     </div>
   `;
 }
 
 export default function DiseaseHeatmap({
-  title: _title,
-  description: _description,
+  title,
+  description,
   allowReporting = false,
   doctorId,
   diseaseOptions = [],
@@ -67,9 +67,6 @@ export default function DiseaseHeatmap({
       if (!allowReporting || !placingPin) return;
       setDraftLatLng(event.latlng);
       setPlacingPin(false);
-      if (!regionName) {
-        setRegionName('');
-      }
     });
 
     mapRef.current = map;
@@ -79,7 +76,7 @@ export default function DiseaseHeatmap({
       mapRef.current = null;
       markerLayerRef.current = null;
     };
-  }, [allowReporting, placingPin, regionName]);
+  }, [allowReporting, placingPin]);
 
   useEffect(() => {
     let active = true;
@@ -228,6 +225,11 @@ export default function DiseaseHeatmap({
 
   return (
     <div className="space-y-6">
+      <div className="panel-card">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-cs-primary">{title}</p>
+        <p className="mt-3 max-w-3xl text-sm text-cs-ink-secondary">{description}</p>
+      </div>
+
       <div className="grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)]">
         <aside className="panel-card h-fit space-y-4 xl:sticky xl:top-28">
           <div className="flex items-center justify-between">
@@ -240,7 +242,7 @@ export default function DiseaseHeatmap({
               {diseaseTotals.map((entry) => (
                 <label
                   key={entry.name}
-                  className="flex cursor-pointer items-center justify-between gap-3 rounded-xl bg-cs-surface-low px-4 py-3 transition-colors hover:bg-cs-surface-high"
+                  className="flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-transparent bg-white px-4 py-3 transition-colors hover:border-cs-outline hover:bg-cs-primary-light"
                 >
                   <div className="flex items-center gap-3">
                     <input
@@ -254,10 +256,7 @@ export default function DiseaseHeatmap({
                       }
                       className="h-4 w-4 rounded border-cs-outline text-cs-primary focus:ring-cs-primary"
                     />
-                    <span
-                      className="h-3 w-3 rounded-full"
-                      style={{ backgroundColor: getDiseaseColor(entry.name) }}
-                    />
+                    <span className="h-3 w-3 rounded-full" style={{ backgroundColor: getDiseaseColor(entry.name) }} />
                     <span className="text-sm text-cs-ink">{entry.name}</span>
                   </div>
                   <span className="text-sm text-cs-ink-secondary">{entry.total}</span>
@@ -271,17 +270,16 @@ export default function DiseaseHeatmap({
           {error ? <p className="text-sm text-cs-error">{error}</p> : null}
         </aside>
 
-        <div className="panel-card relative p-0 overflow-hidden">
+        <div className="panel-card relative overflow-hidden p-0">
           <div ref={containerRef} className="h-[72vh] w-full rounded-2xl" />
 
-          {/* Legend */}
-          <div className="pointer-events-none absolute bottom-4 left-4 z-[500] rounded-2xl bg-white/90 p-4 backdrop-blur-md shadow-cs">
+          <div className="pointer-events-none absolute bottom-4 left-4 z-[500] rounded-2xl border border-cs-outline bg-white/95 p-4 backdrop-blur-md shadow-cs">
             <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-cs-primary">Risk Levels</p>
             <div className="mt-2 space-y-1.5">
               {[
-                { color: '#ba1a1a', label: 'High Risk (>50 cases)' },
-                { color: '#ff8800', label: 'Moderate Risk (10-50 cases)' },
-                { color: '#1b6d24', label: 'Low Risk (<10 cases)' },
+                { color: '#D64545', label: 'High Risk (>50 cases)' },
+                { color: '#B7791F', label: 'Moderate Risk (10-50 cases)' },
+                { color: '#1F9D55', label: 'Low Risk (<10 cases)' },
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-2 text-xs text-cs-ink-secondary">
                   <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
@@ -296,8 +294,7 @@ export default function DiseaseHeatmap({
               <button
                 type="button"
                 onClick={() => setPlacingPin((current) => !current)}
-                className="absolute bottom-6 right-6 z-[500] flex h-14 w-14 items-center justify-center rounded-full text-3xl text-white shadow-cs-lg"
-                style={{ background: 'linear-gradient(135deg, #003178, #0d47a1)' }}
+                className="absolute bottom-6 right-6 z-[500] flex h-14 w-14 items-center justify-center rounded-full bg-cs-primary text-3xl text-white shadow-cs-lg transition-colors hover:bg-cs-primary-dark"
                 title="Add disease report"
               >
                 +
@@ -313,9 +310,8 @@ export default function DiseaseHeatmap({
         </div>
       </div>
 
-      {/* Report Modal */}
       {allowReporting && draftLatLng ? (
-        <div className="fixed inset-0 z-[700] flex items-center justify-center bg-black/30 px-4 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[700] flex items-center justify-center bg-cs-ink/20 px-4 backdrop-blur-sm">
           <div className="panel-card w-full max-w-xl space-y-5">
             <div>
               <h2 className="font-display text-2xl font-bold text-cs-ink">Add Disease Report</h2>
@@ -325,11 +321,7 @@ export default function DiseaseHeatmap({
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
-              <select
-                value={diseaseName}
-                onChange={(event) => setDiseaseName(event.target.value)}
-                className="field-select"
-              >
+              <select value={diseaseName} onChange={(event) => setDiseaseName(event.target.value)} className="field-select">
                 {selectableDiseases.map((option) => (
                   <option key={option} value={option}>
                     {option}

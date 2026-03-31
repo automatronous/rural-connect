@@ -14,21 +14,22 @@ import {
   Zap,
 } from 'lucide-react';
 import { LoadingScreen } from '../../components/LoadingScreen';
+import { MedicalDisclaimerBanner } from '../../components/MedicalDisclaimerBanner';
 import { useAuth } from '../../context/AuthContext';
 import { predictDisease } from '../../lib/api';
 import { fetchPatients } from '../../lib/data';
-import type { PredictionApiResponse, Profile } from '../../lib/types';
 import { useLanguage } from '../../lib/i18n/LanguageContext';
+import type { PredictionApiResponse, Profile } from '../../lib/types';
 
 const SYMPTOM_ICONS: Record<string, { icon: React.ReactNode; color: string }> = {
-  Fever: { icon: <Thermometer className="h-6 w-6" />, color: '#DC2626' },
-  Cough: { icon: <Wind className="h-6 w-6" />, color: '#0284C7' },
-  'Muscle Pain': { icon: <Zap className="h-6 w-6" />, color: '#16A34A' },
-  Headache: { icon: <Brain className="h-6 w-6" />, color: '#003B95' },
-  Rash: { icon: <Flame className="h-6 w-6" />, color: '#DC2626' },
-  Fatigue: { icon: <CircleDot className="h-6 w-6" />, color: '#475569' },
-  Dizziness: { icon: <CircleDot className="h-6 w-6" />, color: '#0284C7' },
-  Nausea: { icon: <Pill className="h-6 w-6" />, color: '#16A34A' },
+  Fever: { icon: <Thermometer className="h-6 w-6" />, color: '#D64545' },
+  Cough: { icon: <Wind className="h-6 w-6" />, color: '#0066CC' },
+  'Muscle Pain': { icon: <Zap className="h-6 w-6" />, color: '#1F9D55' },
+  Headache: { icon: <Brain className="h-6 w-6" />, color: '#4A5568' },
+  Rash: { icon: <Flame className="h-6 w-6" />, color: '#D64545' },
+  Fatigue: { icon: <CircleDot className="h-6 w-6" />, color: '#4A5568' },
+  Dizziness: { icon: <CircleDot className="h-6 w-6" />, color: '#14869C' },
+  Nausea: { icon: <Pill className="h-6 w-6" />, color: '#1F9D55' },
 };
 
 const QUICK_SYMPTOMS = [
@@ -68,25 +69,28 @@ export default function DoctorPredict() {
           setError(loadError instanceof Error ? loadError.message : 'Failed to load patients.');
         }
       } finally {
-        if (active) setLoading(false);
+        if (active) {
+          setLoading(false);
+        }
       }
     }
 
     void loadPatients();
-    return () => { active = false; };
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   function toggleSymptom(key: string) {
     setSelectedSymptoms((current) =>
-      current.includes(key) ? current.filter((s) => s !== key) : [...current, key],
+      current.includes(key) ? current.filter((symptom) => symptom !== key) : [...current, key],
     );
   }
 
   const filteredSymptoms = useMemo(() => {
     if (!search.trim()) return QUICK_SYMPTOMS;
-    return QUICK_SYMPTOMS.filter((s) =>
-      s.label.toLowerCase().includes(search.trim().toLowerCase()),
-    );
+    return QUICK_SYMPTOMS.filter((symptom) => symptom.label.toLowerCase().includes(search.trim().toLowerCase()));
   }, [search]);
 
   async function handleContinue() {
@@ -102,7 +106,7 @@ export default function DoctorPredict() {
           result,
           selectedSymptoms,
           selectedPatientId,
-          patientName: patients.find((p) => p.id === selectedPatientId)?.name ?? 'Patient',
+          patientName: patients.find((patient) => patient.id === selectedPatientId)?.name ?? 'Patient',
         },
       });
     } catch (predictionError) {
@@ -121,7 +125,8 @@ export default function DoctorPredict() {
 
   return (
     <div className="space-y-8">
-      {/* Step Header */}
+      <MedicalDisclaimerBanner />
+
       <div>
         <div className="flex items-center justify-between">
           <div>
@@ -137,11 +142,10 @@ export default function DoctorPredict() {
         </div>
       </div>
 
-      {/* Patient Selector */}
       <select
         value={selectedPatientId}
-        onChange={(e) => {
-          setSelectedPatientId(e.target.value);
+        onChange={(event) => {
+          setSelectedPatientId(event.target.value);
           setSelectedSymptoms([]);
         }}
         className="field-select max-w-md"
@@ -153,29 +157,24 @@ export default function DoctorPredict() {
         ))}
       </select>
 
-      {/* Main Question */}
       <div>
-        <h2 className="font-display text-3xl font-bold leading-tight text-cs-ink md:text-4xl">
-          {t('whatSymptoms')}
-        </h2>
+        <h2 className="font-display text-3xl font-bold leading-tight text-cs-ink md:text-4xl">{t('whatSymptoms')}</h2>
         <p className="mt-3 max-w-xl text-sm text-cs-ink-secondary">
-          Select all that apply. This helps our AI prioritize your care needs before connecting with a provider.
+          Select all that apply. This helps our AI prioritize care needs before connecting the patient with a provider.
         </p>
       </div>
 
-      {/* Search */}
       <div className="relative max-w-2xl">
         <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-cs-ink-secondary/40" />
         <input
           type="text"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(event) => setSearch(event.target.value)}
           className="field-input pl-11"
           placeholder={t('searchSymptom')}
         />
       </div>
 
-      {/* Symptom Grid */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         {filteredSymptoms.map((symptom) => {
           const isSelected = selectedSymptoms.includes(symptom.key);
@@ -186,24 +185,24 @@ export default function DoctorPredict() {
               key={symptom.key}
               type="button"
               onClick={() => toggleSymptom(symptom.key)}
-              className={`flex flex-col items-center gap-3 rounded-[24px] p-6 transition-all duration-200 ${
+              className={`flex flex-col items-center gap-3 rounded-[24px] border p-6 transition-all duration-200 ${
                 isSelected
-                  ? 'bg-white ring-2 ring-cs-primary shadow-sm'
-                  : 'bg-white shadow-sm hover:shadow-md'
+                  ? 'border-cs-primary bg-cs-primary-light ring-2 ring-cs-primary/20'
+                  : 'border-cs-outline bg-white shadow-sm hover:shadow-md'
               }`}
             >
               <div
                 className="flex h-14 w-14 items-center justify-center rounded-full"
                 style={{
-                  backgroundColor: isSelected ? '#003B95' : `${iconConfig?.color ?? '#003B95'}15`,
-                  color: isSelected ? 'white' : iconConfig?.color ?? '#003B95',
+                  backgroundColor: isSelected ? '#0066CC' : `${iconConfig?.color ?? '#0066CC'}18`,
+                  color: isSelected ? '#FFFFFF' : iconConfig?.color ?? '#0066CC',
                 }}
               >
                 {iconConfig?.icon ?? <HeartPulse className="h-6 w-6" />}
               </div>
               <span className="text-sm font-semibold text-cs-ink">{symptom.label}</span>
               {isSelected ? (
-                <span className="rounded-full bg-cs-primary-light px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cs-primary">
+                <span className="rounded-full bg-cs-primary px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
                   Selected
                 </span>
               ) : null}
@@ -214,7 +213,6 @@ export default function DoctorPredict() {
 
       {error ? <div className="panel-card text-cs-error">{error}</div> : null}
 
-      {/* Footer */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-2 text-sm text-cs-ink-secondary">
           <Info className="h-4 w-4 text-cs-tint" />
@@ -231,16 +229,15 @@ export default function DoctorPredict() {
         </button>
       </div>
 
-      {/* Emergency Banner */}
-      <div className="glass-card flex items-center gap-4 bg-cs-surface-low/80">
+      <div className="glass-card flex items-center gap-4">
         <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-cs-surface-high">
           <Shield className="h-6 w-6 text-cs-ink-secondary" />
         </div>
         <div>
           <h3 className="font-display text-sm font-bold text-cs-ink">Need immediate assistance?</h3>
           <p className="mt-0.5 text-xs text-cs-ink-secondary">
-            If you are experiencing severe chest pain, shortness of breath, or sudden weakness,
-            please use the emergency call button immediately or dial 911.
+            If the patient is experiencing severe chest pain, shortness of breath, or sudden weakness, use the
+            emergency call button immediately or dial 911.
           </p>
         </div>
       </div>

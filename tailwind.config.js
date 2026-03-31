@@ -8,24 +8,28 @@ export default {
     extend: {
       colors: {
         cs: {
-          surface: '#F8FAFC',       // Extremely soft blue-gray / slate-50
-          'surface-low': '#F1F5F9', // slate-100
-          'surface-mid': '#E2E8F0', // slate-200
-          'surface-high': '#CBD5E1',// slate-300
-          'surface-highest': '#94A3B8', // slate-400
+          surface: '#FFFFFF',
+          'surface-low': '#F4F7FA',
+          'surface-mid': '#E8EEF5',
+          'surface-high': '#D9E3EE',
+          'surface-highest': '#BDD0E4',
           white: '#FFFFFF',
-          primary: '#003B95',       // Extracted solid deep blue
-          'primary-dark': '#06265B',
-          'primary-light': '#E0E7FF',
-          green: '#15803D',
+          primary: '#0066CC',
+          'primary-dark': '#0052A3',
+          'primary-light': '#E9F4FF',
+          teal: '#14869C',
+          'teal-light': '#E3F6FA',
+          green: '#1F9D55',
           'green-light': '#DCFCE7',
-          cyan: '#A5F3FC',
-          error: '#D32F2F',         // Flat danger red
-          'error-light': '#FEE2E2',
-          ink: '#0F172A',           // Dark slate for text
-          'ink-secondary': '#64748B', // Slate grey for secondary text
-          outline: '#E2E8F0',
-          tint: '#003B95',
+          cyan: '#BDEBFF',
+          warning: '#B7791F',
+          'warning-light': '#FFF7E0',
+          error: '#D64545',
+          'error-light': '#FDECEC',
+          ink: '#1A2B4A',
+          'ink-secondary': '#4A5568',
+          outline: '#D9E3EE',
+          tint: '#0066CC',
         },
       },
       fontFamily: {
@@ -33,21 +37,21 @@ export default {
         display: ['Manrope', 'sans-serif'],
       },
       boxShadow: {
-        'cs': '0 4px 24px -2px rgba(0, 0, 0, 0.04)',
-        'cs-lg': '0 10px 32px -4px rgba(0, 0, 0, 0.08)',
-        'cs-hover': '0 16px 48px -8px rgba(0, 59, 149, 0.12)',
+        cs: '0 12px 32px -20px rgba(26, 43, 74, 0.24)',
+        'cs-lg': '0 20px 40px -24px rgba(26, 43, 74, 0.28)',
+        'cs-hover': '0 24px 48px -24px rgba(0, 102, 204, 0.28)',
       },
       animation: {
-        'float': 'float 6s ease-in-out infinite',
+        float: 'float 6s ease-in-out infinite',
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-20px)' },
-        }
-      }
+        },
+      },
     },
   },
   plugins: [],
-}
+};

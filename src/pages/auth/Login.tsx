@@ -65,8 +65,8 @@ export default function Login() {
       <main className="mx-auto flex min-h-[calc(100vh-80px)] max-w-7xl items-center justify-center px-4 py-12">
         <form onSubmit={handleSubmit} className="panel-card w-full max-w-md space-y-5">
           <div>
-            <h1 className="heading-orbitron text-3xl font-bold text-white">Sign In</h1>
-            <p className="mt-3 text-white/60">
+            <h1 className="heading-orbitron text-3xl font-bold text-cs-ink">Sign In</h1>
+            <p className="mt-3 text-cs-ink-secondary">
               Access the correct doctor or patient workspace.
             </p>
           </div>

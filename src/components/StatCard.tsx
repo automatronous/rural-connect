@@ -19,12 +19,10 @@ export function StatCard({ label, value, hint, icon, trend, trendUp, accentDot }
         {trend ? (
           <span
             className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-              trendUp
-                ? 'bg-cs-green-light text-cs-green'
-                : 'bg-cs-error-light text-cs-error'
+              trendUp ? 'bg-cs-green-light text-cs-green' : 'bg-cs-error-light text-cs-error'
             }`}
           >
-            {trendUp ? '↑' : '↓'} {trend}
+            {trendUp ? 'Up' : 'Down'} {trend}
           </span>
         ) : null}
       </div>
@@ -32,15 +30,12 @@ export function StatCard({ label, value, hint, icon, trend, trendUp, accentDot }
       <div className="flex items-end gap-2">
         <p className="font-display text-3xl font-bold text-cs-ink">{value}</p>
         {accentDot ? (
-          <span
-            className="mb-1.5 h-2 w-2 rounded-full"
-            style={{ backgroundColor: accentDot }}
-          />
+          <span className="mb-1.5 h-2 w-2 rounded-full" style={{ backgroundColor: accentDot }} />
         ) : null}
       </div>
 
       <p className="text-sm text-cs-ink-secondary">{label}</p>
-      {hint ? <p className="text-xs text-cs-ink-secondary/60">{hint}</p> : null}
+      {hint ? <p className="text-xs text-cs-ink-secondary/70">{hint}</p> : null}
     </div>
   );
 }
