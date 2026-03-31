@@ -97,11 +97,11 @@ export default function Login() {
             {loading ? 'Signing in...' : 'Login'}
           </button>
 
-          {error ? <p className="text-sm text-red-300">{error}</p> : null}
+          {error ? <p className="text-sm text-cs-error">{error}</p> : null}
 
-          <p className="text-sm text-white/60">
+          <p className="text-sm text-cs-ink-secondary">
             New here?{' '}
-            <Link to="/register" className="text-red-300 hover:text-red-200">
+            <Link to="/register" className="font-semibold text-cs-primary hover:underline">
               Create an account
             </Link>
           </p>

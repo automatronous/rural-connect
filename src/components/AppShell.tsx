@@ -1,78 +1,78 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import { Bell, HelpCircle, LogOut, Search } from 'lucide-react';
+import Sidebar from './Sidebar';
 import { useAuth } from '../context/AuthContext';
-import { APP_NAME, NAV_LINKS } from '../lib/constants';
-import { cn } from '../lib/utils';
+import { useNavigate } from 'react-router-dom';
 
 export function AppShell() {
+  const { profile, signOut } = useAuth();
   const navigate = useNavigate();
-  const { profile, role, signOut } = useAuth();
 
-  const links = role ? NAV_LINKS[role] : [];
-
-  async function handleLogout() {
+  const handleLogout = async () => {
     await signOut();
-    navigate('/login');
-  }
+    navigate('/login', { replace: true });
+  };
 
   return (
-    <div className="app-shell relative min-h-screen overflow-hidden">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,68,68,0.12),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(68,136,255,0.1),transparent_30%)]" />
+    <div className="app-shell flex min-h-screen">
+      {/* Sidebar */}
+      <Sidebar />
 
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05070a]/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center justify-between gap-4">
-            <NavLink to={role ? `/${role}/dashboard` : '/'} className="heading-orbitron text-2xl font-bold text-red-500">
-              {APP_NAME}
-            </NavLink>
+      {/* Main Content Area */}
+      <div className="ml-[220px] flex flex-1 flex-col">
+        {/* Top Bar */}
+        <header className="sticky top-0 z-20 flex items-center justify-between bg-cs-surface/80 px-8 py-4 backdrop-blur-md">
+          <div className="flex-1" />
 
-            <div
-              className={cn(
-                'rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] lg:hidden',
-                role === 'doctor' ? 'badge-doctor' : 'badge-patient',
-              )}
+          <div className="flex items-center gap-3">
+            {/* Search */}
+            <div className="relative hidden md:block">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-cs-ink-secondary/50" />
+              <input
+                type="text"
+                placeholder="Search data or medical record"
+                className="rounded-full bg-cs-surface-low py-2 pl-10 pr-4 text-sm text-cs-ink placeholder-cs-ink-secondary/40 outline-none transition-all duration-200 focus:bg-white focus:shadow-cs"
+                style={{ width: '260px' }}
+              />
+            </div>
+
+            {/* Notifications */}
+            <button
+              type="button"
+              className="relative rounded-full p-2 text-cs-ink-secondary transition-colors hover:bg-cs-surface-high"
             >
-              {role}
-            </div>
-          </div>
+              <Bell className="h-5 w-5" />
+            </button>
 
-          <nav className="flex flex-wrap items-center gap-2">
-            {links.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                className={({ isActive }) => cn('nav-link', isActive && 'nav-link-active')}
-              >
-                {link.label}
-              </NavLink>
-            ))}
-          </nav>
+            {/* Help */}
+            <button
+              type="button"
+              className="rounded-full p-2 text-cs-ink-secondary transition-colors hover:bg-cs-surface-high"
+            >
+              <HelpCircle className="h-5 w-5" />
+            </button>
 
-          <div className="flex items-center justify-between gap-3">
-            <div className="hidden items-center gap-3 lg:flex">
-              <div className="text-right">
-                <p className="text-sm text-white/60">Signed in as</p>
-                <p className="font-semibold text-white">{profile?.name ?? 'Unknown user'}</p>
-              </div>
-              <div
-                className={cn(
-                  'rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em]',
-                  role === 'doctor' ? 'badge-doctor' : 'badge-patient',
-                )}
-              >
-                {role}
-              </div>
+            {/* Avatar */}
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-cs-primary to-cs-primary-dark text-sm font-bold text-white">
+              {profile?.name?.charAt(0)?.toUpperCase() ?? 'U'}
             </div>
 
-            <button type="button" onClick={handleLogout} className="secondary-button py-2">
-              Logout
+            {/* Logout */}
+            <button
+              onClick={handleLogout}
+              className="ml-2 flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold text-cs-error/90 transition-colors hover:bg-cs-error/10 hover:text-cs-error"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Logout</span>
             </button>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <main className="relative z-10 mx-auto max-w-7xl px-4 py-8">
-        <Outlet />
-      </main>
+        {/* Page Content */}
+        <main className="flex-1 px-8 pb-8 pt-2">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }

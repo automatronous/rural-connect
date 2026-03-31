@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Brain,
@@ -13,22 +13,19 @@ import {
   Wind,
   Zap,
 } from 'lucide-react';
-import { LoadingScreen } from '../../components/LoadingScreen';
 import { useAuth } from '../../context/AuthContext';
 import { predictDisease } from '../../lib/api';
-import { fetchPatients } from '../../lib/data';
-import type { PredictionApiResponse, Profile } from '../../lib/types';
-import { useLanguage } from '../../lib/i18n/LanguageContext';
+import type { PredictionApiResponse } from '../../lib/types';
 
 const SYMPTOM_ICONS: Record<string, { icon: React.ReactNode; color: string }> = {
-  Fever: { icon: <Thermometer className="h-6 w-6" />, color: '#DC2626' },
-  Cough: { icon: <Wind className="h-6 w-6" />, color: '#0284C7' },
-  'Muscle Pain': { icon: <Zap className="h-6 w-6" />, color: '#16A34A' },
-  Headache: { icon: <Brain className="h-6 w-6" />, color: '#003B95' },
-  Rash: { icon: <Flame className="h-6 w-6" />, color: '#DC2626' },
-  Fatigue: { icon: <CircleDot className="h-6 w-6" />, color: '#475569' },
-  Dizziness: { icon: <CircleDot className="h-6 w-6" />, color: '#0284C7' },
-  Nausea: { icon: <Pill className="h-6 w-6" />, color: '#16A34A' },
+  Fever: { icon: <Thermometer className="h-6 w-6" />, color: '#ba1a1a' },
+  Cough: { icon: <Wind className="h-6 w-6" />, color: '#003178' },
+  'Muscle Pain': { icon: <Zap className="h-6 w-6" />, color: '#6b7a3d' },
+  Headache: { icon: <Brain className="h-6 w-6" />, color: '#003178' },
+  Rash: { icon: <Flame className="h-6 w-6" />, color: '#ba1a1a' },
+  Fatigue: { icon: <CircleDot className="h-6 w-6" />, color: '#003178' },
+  Dizziness: { icon: <CircleDot className="h-6 w-6" />, color: '#1b6d24' },
+  Nausea: { icon: <Pill className="h-6 w-6" />, color: '#1b6d24' },
 };
 
 const QUICK_SYMPTOMS = [
@@ -42,39 +39,13 @@ const QUICK_SYMPTOMS = [
   { label: 'Nausea', key: 'nausea' },
 ];
 
-export default function DoctorPredict() {
+export default function PatientPredict() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  const { t } = useLanguage();
-  const [patients, setPatients] = useState<Profile[]>([]);
-  const [selectedPatientId, setSelectedPatientId] = useState('');
+  const { user, profile } = useAuth();
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(true);
   const [predicting, setPredicting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let active = true;
-
-    async function loadPatients() {
-      try {
-        const nextPatients = await fetchPatients();
-        if (!active) return;
-        setPatients(nextPatients);
-        setSelectedPatientId((current) => current || nextPatients[0]?.id || '');
-      } catch (loadError) {
-        if (active) {
-          setError(loadError instanceof Error ? loadError.message : 'Failed to load patients.');
-        }
-      } finally {
-        if (active) setLoading(false);
-      }
-    }
-
-    void loadPatients();
-    return () => { active = false; };
-  }, []);
 
   function toggleSymptom(key: string) {
     setSelectedSymptoms((current) =>
@@ -90,29 +61,25 @@ export default function DoctorPredict() {
   }, [search]);
 
   async function handleContinue() {
-    if (!user || !selectedPatientId || !selectedSymptoms.length) return;
+    if (!user || !selectedSymptoms.length) return;
 
     setPredicting(true);
     setError(null);
 
     try {
-      const result: PredictionApiResponse = await predictDisease(selectedSymptoms, selectedPatientId, user.id);
-      navigate('/doctor/results', {
+      // For self-check, pass empty string or user.id for doctorId
+      const result: PredictionApiResponse = await predictDisease(selectedSymptoms, user.id, '');
+      navigate('/patient/results', {
         state: {
           result,
           selectedSymptoms,
-          selectedPatientId,
-          patientName: patients.find((p) => p.id === selectedPatientId)?.name ?? 'Patient',
+          patientName: profile?.name ?? 'Patient',
         },
       });
     } catch (predictionError) {
       setError(predictionError instanceof Error ? predictionError.message : 'Prediction failed.');
       setPredicting(false);
     }
-  }
-
-  if (loading) {
-    return <LoadingScreen label="Loading prediction tool..." />;
   }
 
   const totalSteps = 2;
@@ -128,7 +95,7 @@ export default function DoctorPredict() {
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-cs-primary">
               Step {currentStep} of {totalSteps}
             </p>
-            <h1 className="mt-1 font-display text-2xl font-bold text-cs-ink">{t('symptomScreening')}</h1>
+            <h1 className="mt-1 font-display text-2xl font-bold text-cs-ink">AI Symptom Checker</h1>
           </div>
           <span className="text-sm text-cs-ink-secondary">{progress}% Complete</span>
         </div>
@@ -137,26 +104,11 @@ export default function DoctorPredict() {
         </div>
       </div>
 
-      {/* Patient Selector */}
-      <select
-        value={selectedPatientId}
-        onChange={(e) => {
-          setSelectedPatientId(e.target.value);
-          setSelectedSymptoms([]);
-        }}
-        className="field-select max-w-md"
-      >
-        {patients.map((patient) => (
-          <option key={patient.id} value={patient.id}>
-            {patient.name} ({patient.email})
-          </option>
-        ))}
-      </select>
-
       {/* Main Question */}
       <div>
         <h2 className="font-display text-3xl font-bold leading-tight text-cs-ink md:text-4xl">
-          {t('whatSymptoms')}
+          What symptoms are you{' '}
+          <span className="text-cs-primary">experiencing today?</span>
         </h2>
         <p className="mt-3 max-w-xl text-sm text-cs-ink-secondary">
           Select all that apply. This helps our AI prioritize your care needs before connecting with a provider.
@@ -171,7 +123,7 @@ export default function DoctorPredict() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="field-input pl-11"
-          placeholder={t('searchSymptom')}
+          placeholder="Search for a specific symptom (e.g. sore throat)"
         />
       </div>
 
@@ -186,24 +138,24 @@ export default function DoctorPredict() {
               key={symptom.key}
               type="button"
               onClick={() => toggleSymptom(symptom.key)}
-              className={`flex flex-col items-center gap-3 rounded-[24px] p-6 transition-all duration-200 ${
+              className={`flex flex-col items-center gap-3 rounded-2xl p-6 transition-all duration-200 ${
                 isSelected
-                  ? 'bg-white ring-2 ring-cs-primary shadow-sm'
-                  : 'bg-white shadow-sm hover:shadow-md'
+                  ? 'bg-cs-primary/5 ring-2 ring-cs-primary'
+                  : 'bg-white shadow-cs hover:shadow-cs-lg'
               }`}
             >
               <div
-                className="flex h-14 w-14 items-center justify-center rounded-full"
+                className="flex h-12 w-12 items-center justify-center rounded-xl"
                 style={{
-                  backgroundColor: isSelected ? '#003B95' : `${iconConfig?.color ?? '#003B95'}15`,
-                  color: isSelected ? 'white' : iconConfig?.color ?? '#003B95',
+                  backgroundColor: isSelected ? '#003178' : `${iconConfig?.color ?? '#003178'}15`,
+                  color: isSelected ? 'white' : iconConfig?.color ?? '#003178',
                 }}
               >
                 {iconConfig?.icon ?? <HeartPulse className="h-6 w-6" />}
               </div>
               <span className="text-sm font-semibold text-cs-ink">{symptom.label}</span>
               {isSelected ? (
-                <span className="rounded-full bg-cs-primary-light px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cs-primary">
+                <span className="rounded-full bg-cs-primary px-2 py-0.5 text-[10px] font-bold uppercase text-white">
                   Selected
                 </span>
               ) : null}
@@ -224,10 +176,10 @@ export default function DoctorPredict() {
         <button
           type="button"
           onClick={handleContinue}
-          disabled={predicting || !selectedSymptoms.length || !selectedPatientId}
+          disabled={predicting || !selectedSymptoms.length}
           className="primary-button flex items-center gap-2"
         >
-          {predicting ? 'Analyzing...' : t('continueToDetails')}
+          {predicting ? 'Analyzing...' : 'Continue to Results →'}
         </button>
       </div>
 

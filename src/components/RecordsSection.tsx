@@ -45,8 +45,8 @@ export function RecordsSection({
   return (
     <div className="space-y-6">
       <div className="panel-card">
-        <h2 className="heading-orbitron text-2xl font-bold text-white">{title}</h2>
-        <p className="mt-2 text-white/65">{description}</p>
+        <h2 className="font-display text-xl font-bold text-cs-ink">{title}</h2>
+        <p className="mt-2 text-cs-ink-secondary">{description}</p>
 
         {onUpload ? (
           <div className="mt-6 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
@@ -72,7 +72,7 @@ export function RecordsSection({
                 className="field-select"
               >
                 {['Blood Test', 'X-Ray', 'MRI', 'Prescription', 'ECG', 'Other'].map((option) => (
-                  <option key={option} value={option} className="bg-[#0b1118]">
+                  <option key={option} value={option}>
                     {option}
                   </option>
                 ))}
@@ -83,12 +83,12 @@ export function RecordsSection({
               </button>
 
               {file ? (
-                <p className="text-sm text-white/60">
-                  Selected file: <span className="text-white">{file.name}</span>
+                <p className="text-sm text-cs-ink-secondary">
+                  Selected file: <span className="font-medium text-cs-ink">{file.name}</span>
                 </p>
               ) : null}
 
-              {error ? <p className="text-sm text-red-300">{error}</p> : null}
+              {error ? <p className="text-sm text-cs-error">{error}</p> : null}
             </div>
           </div>
         ) : null}
@@ -96,7 +96,7 @@ export function RecordsSection({
 
       <div className="table-shell">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-white/10">
+          <table className="min-w-full">
             <thead className="table-head">
               <tr>
                 <th className="table-cell">File Name</th>
@@ -106,11 +106,11 @@ export function RecordsSection({
                 <th className="table-cell text-right">Download</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody>
               {records.length ? (
                 records.map((record) => (
-                  <tr key={record.id}>
-                    <td className="table-cell font-medium text-white">{record.file_name ?? 'Untitled file'}</td>
+                  <tr key={record.id} className="border-t border-cs-surface-high">
+                    <td className="table-cell font-medium text-cs-ink">{record.file_name ?? 'Untitled file'}</td>
                     <td className="table-cell">{record.record_type ?? 'Other'}</td>
                     <td className="table-cell">{formatDate(record.upload_date ?? record.created_at)}</td>
                     <td className="table-cell">{record.uploaderName}</td>
@@ -125,14 +125,14 @@ export function RecordsSection({
                           Download
                         </a>
                       ) : (
-                        <span className="text-white/40">Unavailable</span>
+                        <span className="text-cs-ink-secondary/50">Unavailable</span>
                       )}
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td className="table-cell py-8 text-center text-white/50" colSpan={5}>
+                  <td className="table-cell py-8 text-center text-cs-ink-secondary" colSpan={5}>
                     No records uploaded yet.
                   </td>
                 </tr>

@@ -4,9 +4,9 @@ import { cn } from '../lib/utils';
 
 export function PublicHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05070a]/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl" style={{ boxShadow: '0 1px 0 rgba(195, 198, 212, 0.25)' }}>
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 md:flex-row md:items-center md:justify-between">
-        <Link to="/" className="heading-orbitron text-2xl font-bold text-red-500">
+        <Link to="/" className="font-display text-2xl font-bold text-cs-primary">
           {APP_NAME}
         </Link>
 
