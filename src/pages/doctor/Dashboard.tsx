@@ -8,9 +8,11 @@ import { fetchDoctorDashboardData } from '../../lib/data';
 import type { DoctorDashboardData } from '../../lib/types';
 import { formatDate } from '../../lib/utils';
 import { Activity, BarChart3, FileText, MapPin } from 'lucide-react';
+import { useLanguage } from '../../lib/i18n/LanguageContext';
 
 export default function DoctorDashboard() {
   const { profile, user } = useAuth();
+  const { t } = useLanguage();
   const [data, setData] = useState<DoctorDashboardData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,23 +47,21 @@ export default function DoctorDashboard() {
   return (
     <div className="space-y-8">
       <section className="panel-card">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-cs-ink-secondary">Doctor Dashboard</p>
-        <h1 className="mt-4 font-display text-3xl font-bold text-cs-ink">Welcome Dr. {profile?.name ?? ''}</h1>
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-cs-ink-secondary">{t('dashboard')}</p>
+        <h1 className="mt-4 font-display text-3xl font-bold text-cs-ink">{t('welcomeBack')} Dr. {profile?.name ?? ''}</h1>
         <p className="mt-3 text-cs-ink-secondary">
           Review patient activity, AI prediction usage, uploaded records, and disease reporting from one control surface.
         </p>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <Link to="/doctor/predict" className="primary-button text-center">
-            New Prediction
+            {t('symptomScreening')}
           </Link>
           <a href="#doctor-live-heatmap" className="secondary-button text-center">
-            Live Heatmap
+            {t('heatmap')}
           </a>
-            New Prediction (Quick Assist)
-          </Link>
           <Link to="/doctor/patients" className="secondary-button text-center">
-            All Patients
+             {t('patients')}
           </Link>
         </div>
       </section>

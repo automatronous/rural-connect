@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import type { PredictionApiResponse } from '../../lib/types';
 import { formatLabel, normalizeConfidence } from '../../lib/utils';
+import { useLanguage } from '../../lib/i18n/LanguageContext';
 
 interface ResultsState {
   result: PredictionApiResponse;
@@ -21,6 +22,7 @@ interface ResultsState {
 export default function DoctorResults() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const state = location.state as ResultsState | null;
 
   if (!state?.result) {
@@ -51,7 +53,7 @@ export default function DoctorResults() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="font-display text-3xl font-bold text-cs-ink">Assessment Results</h1>
+        <h1 className="font-display text-3xl font-bold text-cs-ink">{t('assessmentResults')}</h1>
         <p className="mt-1 text-sm text-cs-ink-secondary">
           Symptom Check Complete • {today} • Patient: {patientName}
         </p>
@@ -60,7 +62,7 @@ export default function DoctorResults() {
       {/* Analysis Progress */}
       <div>
         <div className="flex items-center justify-between">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-cs-primary">Analysis Progress</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-cs-primary">{t('analysisProgress')}</p>
           <span className="text-sm font-bold text-cs-primary">100%</span>
         </div>
         <div className="progress-bar mt-2">
@@ -86,7 +88,7 @@ export default function DoctorResults() {
                       : 'bg-cs-green-light text-cs-green'
                   }`}
                 >
-                  Priority: {isHighPriority ? 'High' : 'Low'}
+                  {t('priority')}: {isHighPriority ? 'High' : 'Low'}
                 </span>
 
                 <h2 className="mt-3 font-display text-2xl font-bold leading-tight text-cs-ink md:text-3xl">
@@ -105,7 +107,7 @@ export default function DoctorResults() {
             {/* Confidence Bar */}
             <div className="mt-6 rounded-xl bg-cs-surface-low p-4">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-cs-ink-secondary">Confidence Score</span>
+                <span className="text-cs-ink-secondary">{t('confidenceScore')}</span>
                 <span className="font-bold text-cs-ink">{confidence.toFixed(1)}%</span>
               </div>
               <div className="progress-bar mt-2">
@@ -120,14 +122,14 @@ export default function DoctorResults() {
           {/* Why This Result */}
           <div className="panel-card">
             <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-cs-primary">
-              Why This Result?
+              {t('whyThisResult')}
             </h3>
 
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               {/* Matched Symptoms */}
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-cs-ink-secondary">
-                  Matched Symptoms
+                  {t('matchedSymptoms')}
                 </p>
                 <div className="mt-3 space-y-2">
                   {result.symptoms_used.slice(0, 3).map((symptom) => (
@@ -143,7 +145,7 @@ export default function DoctorResults() {
               <div className="rounded-xl bg-cs-surface-low p-4">
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-cs-error" />
-                  <span className="text-sm font-bold text-cs-ink">Outbreak Proximity</span>
+                  <span className="text-sm font-bold text-cs-ink">{t('outbreakProximity')}</span>
                 </div>
                 <p className="mt-2 text-xs text-cs-ink-secondary">
                   Active cluster detected within 2.4km of your current location.
@@ -156,7 +158,7 @@ export default function DoctorResults() {
           {result.top3.length > 0 ? (
             <div className="panel-card">
               <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-cs-primary">
-                Top Differentials
+                {t('topDifferentials')}
               </h3>
               <div className="mt-4 grid gap-3 md:grid-cols-3">
                 {result.top3.map((entry) => (
@@ -175,8 +177,7 @@ export default function DoctorResults() {
           <div className="flex items-start gap-3 rounded-2xl bg-cs-surface-low p-5">
             <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-cs-tint" />
             <p className="text-sm italic text-cs-ink-secondary">
-              Disclaimer: This is an AI-powered assessment, not a medical diagnosis.
-              Please seek professional medical advice immediately if your symptoms worsen.
+              {t('aiDisclaimer')}
             </p>
           </div>
         </div>
@@ -187,7 +188,7 @@ export default function DoctorResults() {
           <div className="overflow-hidden rounded-2xl">
             <div className="bg-gradient-to-br from-cs-error to-red-700 p-5">
               <Sparkles className="h-8 w-8 text-white/80" />
-              <h3 className="mt-3 font-display text-lg font-bold text-white">Immediate Concern?</h3>
+              <h3 className="mt-3 font-display text-lg font-bold text-white">{t('immediateConcern')}</h3>
               <p className="mt-2 text-xs text-white/80">
                 If you are experiencing difficulty breathing or loss of consciousness, call the center now.
               </p>
@@ -195,14 +196,14 @@ export default function DoctorResults() {
             <div className="bg-cs-error-light p-4">
               <button type="button" className="danger-button flex w-full items-center justify-center gap-2 text-sm">
                 <Phone className="h-4 w-4" />
-                Call Health Center
+                {t('callHealthCenter')}
               </button>
             </div>
           </div>
 
           {/* Recommended Step */}
           <div className="panel-card">
-            <h3 className="font-display text-base font-bold text-cs-ink">Recommended Step</h3>
+            <h3 className="font-display text-base font-bold text-cs-ink">{t('recommendedStep')}</h3>
             <p className="mt-2 text-sm text-cs-ink-secondary">
               Connect with a specialist via Telehealth for a formal diagnostic plan and prescription.
             </p>
@@ -213,21 +214,21 @@ export default function DoctorResults() {
               style={{ background: 'linear-gradient(135deg, #003178, #0d47a1)' }}
             >
               <Calendar className="h-4 w-4" />
-              Book a Consultation
+              {t('bookConsultation')}
             </button>
 
             <button
               type="button"
-              className="mt-2 w-full text-center text-sm font-semibold text-cs-primary"
+              className="mt-2 w-full text-center text-sm font-semibold text-cs-primary hover:text-cs-primary-dark"
             >
-              Find Nearest Clinic
+              {t('findNearestClinic')}
             </button>
           </div>
 
           {/* Regional Heatmap Mini */}
           <div className="panel-card overflow-hidden p-0">
             <p className="px-4 pt-4 text-[10px] font-bold uppercase tracking-[0.15em] text-cs-ink-secondary">
-              Regional Heatmap
+              {t('regionalHeatmap')}
             </p>
             <div className="mt-2 h-32 bg-gradient-to-br from-cs-primary/10 to-cs-green/5">
               <div className="flex h-full items-center justify-center">
@@ -235,7 +236,7 @@ export default function DoctorResults() {
                   to="/doctor/heatmap"
                   className="rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-cs-primary shadow-sm transition-all hover:shadow-md"
                 >
-                  View Full Map
+                  {t('viewFullMap')}
                 </Link>
               </div>
             </div>
